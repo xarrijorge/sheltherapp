@@ -30,14 +30,12 @@ const AppNavigator = () => {
     const fetchUser = async () => {
         const userData = await SecureStore.getItemAsync('userData');
         const { loggedIn } = JSON.parse(userData);
-        console.log('first', loggedIn);
         setLoggedIn(loggedIn ? true : false);
     };
 
     useEffect(() => {
-        console.log('second', loggedIn);
         fetchUser();
-    }, [loggedIn]);
+    }, []);
 
 
     return (

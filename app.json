@@ -26,7 +26,15 @@
     },
     "plugins": [
       "expo-font",
-      "expo-secure-store"
+      "expo-secure-store",
+      [
+        "expo-contacts",
+        {
+          "contactsPermission": "Allow $(PRODUCT_NAME) to access your contacts."
+        }
+      ],
+      "expo-image-picker",
+      "expo-location"
     ],
     "extra": {
       "eas": {

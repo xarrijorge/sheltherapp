@@ -1,72 +1,125 @@
-// src/screens/CompleteProfileScreen.js
-import React, { useState } from 'react';
-import { View, StyleSheet, Alert } from 'react-native';
-import { TextInput, Button, Text } from 'react-native-paper';
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet, Alert, ScrollView, Image, FlatList, TouchableOpacity } from 'react-native';
+import { TextInput, Button, Text, IconButton, FAB, Avatar } from 'react-native-paper';
+import * as ImagePicker from 'expo-image-picker';
+import * as Contacts from 'expo-contacts';
+import * as Location from 'expo-location';
 import axios from '../utils/axiosConfig';
 
 const CompleteProfileScreen = ({ route, navigation }) => {
-    const { email } = route.params;
+    const [mediaStatus, requestMediaPermission] = ImagePicker.useMediaLibraryPermissions();
+    const [camStatus, requestCamPermission] = ImagePicker.useCameraPermissions();
+
     const [name, setName] = useState('');
     const [password, setPassword] = useState('');
+    const [photo, setPhoto] = useState(null);
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [photo, setPhoto] = useState('');
     const [address, setAddress] = useState('');
-    const [contacts, setContacts] = useState('');
-    const [places, setPlaces] = useState('');
+    const [contacts, setContacts] = useState([]);
+    const [places, setPlaces] = useState([]);
+
+    useEffect(() => {
+        requestMediaPermission();
+        requestCamPermission();
+    }, []);
+
+    const pickImage = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            allowsEditing: true,
+            aspect: [1, 1],
+            quality: 1,
+        });
+
+        if (!result.canceled) {
+            setPhoto(result.assets[0].uri);
+        }
+        console.log(result);
+    };
+
+    // const getContacts = async () => {
+    //     const { status } = await Contacts.requestPermissionsAsync();
+    //     if (status === 'granted') {
+    //         const { data } = await Contacts.getContactsAsync({
+    //             fields: [Contacts.Fields.PhoneNumbers],
+    //         });
+
+    //         if (data.length > 0) {
+    //             setContacts(data.slice(0, 5).map(contact => ({
+    //                 id: contact.id,
+    //                 name: contact.name,
+    //                 number: contact.phoneNumbers && contact.phoneNumbers[0] ? contact.phoneNumbers[0].number : ''
+    //             })));
+    //         }
+    //     }
+    // };
+
+    // const getPlace = async () => {
+    //     let { status } = await Location.requestForegroundPermissionsAsync();
+    //     if (status !== 'granted') {
+    //         Alert.alert('Permission to access location was denied');
+    //         return;
+    //     }
+
+    //     let location = await Location.getCurrentPositionAsync({});
+    //     setPlaces([...places, {
+    //         id: Date.now().toString(),
+    //         name: `Place ${places.length + 1}`,
+    //         latitude: location.coords.latitude,
+    //         longitude: location.coords.longitude
+    //     }]);
+    // };
 
     const handleCompleteProfile = async () => {
-        if (password !== confirmPassword) {
-            Alert.alert('Error', 'Passwords do not match');
+        if (!name || !password || !photo || !address || contacts.length < 1 || places.length < 2) {
+            Alert.alert('Error', 'Please fill all required fields');
             return;
         }
 
-        const userProfileData = {
-            "email": email,
-            "password": password,
-            "name": name,
-            "photo": photo,
-            "address": address,
-            "contacts": [
-                {
-                    "id": "contact3",
-                    "name": "Robert Brown",
-                    "phone": "+1123456789",
-                    "email": "robert.brown@example.com"
-                }
-            ],
-            "locations": [],
-            "places": [
-                {
-                    "id": "place1",
-                    "name": "Home",
-                    "latitude": 37.7749,
-                    "longitude": -122.4194
-                },
-                {
-                    "id": "place2",
-                    "name": "Work",
-                    "latitude": 37.7749,
-                    "longitude": -122.4194
-                }
-            ]
-        }
-
-
-
         try {
-            const response = await axios.post('/auth/complete', userProfileData);
-            Alert.alert('Success', 'Profile completed successfully.', [
-                { text: 'OK', onPress: () => navigation.navigate('Home') },
-            ]);
+            const response = await axios.post('/auth/complete-profile', {
+                email: route.params.email, // Assuming email is passed from previous screen
+                password,
+                name,
+                photo,
+                address,
+                contacts,
+                places
+            });
+
+            Alert.alert('Success', 'Profile completed successfully');
+            navigation.navigate('Home');
         } catch (error) {
-            Alert.alert('Error', error.response?.data?.error || 'Profile completion failed');
-            console.error(error);
+            Alert.alert('Error', error.response?.data?.error || 'Failed to complete profile');
         }
     };
 
+    const removeContact = (id) => {
+        setContacts(contacts.filter(contact => contact.id !== id));
+    };
+
+    const removePlace = (id) => {
+        setPlaces(places.filter(place => place.id !== id));
+    };
+
+    const removePhoto = () => {
+        setPhoto(null);
+    };
+
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Complete Profile</Text>
+        <ScrollView contentContainerStyle={styles.container}>
+            <View style={{ marginBottom: 20 }}>
+                {/* Image Section */}
+                {!photo && <Button mode="contained" onPress={pickImage} style={styles.button}>
+                    {photo ? 'Change Image' : 'Pick an Image'}
+                </Button>}
+                {photo && (
+                    <View style={styles.selectedItem}>
+                        <Avatar.Image source={{ uri: photo }} />
+                        <IconButton icon="delete" size={20} onPress={removePhoto} />
+                    </View>
+                )}
+            </View>
             <TextInput
                 label="Name"
                 value={name}
@@ -75,22 +128,16 @@ const CompleteProfileScreen = ({ route, navigation }) => {
             />
             <TextInput
                 label="Password"
-                secureTextEntry
                 value={password}
                 onChangeText={setPassword}
+                secureTextEntry
                 style={styles.input}
             />
             <TextInput
                 label="Confirm Password"
-                secureTextEntry
                 value={confirmPassword}
                 onChangeText={setConfirmPassword}
-                style={styles.input}
-            />
-            <TextInput
-                label="Photo URL"
-                value={photo}
-                onChangeText={setPhoto}
+                secureTextEntry
                 style={styles.input}
             />
             <TextInput
@@ -99,41 +146,39 @@ const CompleteProfileScreen = ({ route, navigation }) => {
                 onChangeText={setAddress}
                 style={styles.input}
             />
-            <TextInput
-                label="Contacts (comma separated)"
-                value={contacts}
-                onChangeText={setContacts}
-                style={styles.input}
-            />
-            <TextInput
-                label="Places (comma separated)"
-                value={places}
-                onChangeText={setPlaces}
-                style={styles.input}
-            />
+
+
             <Button mode="contained" onPress={handleCompleteProfile} style={styles.button}>
                 Complete Profile
             </Button>
-        </View>
+            {/* // navigate to home page */}
+            <Button mode="contained" onPress={() => navigation.navigate('Home')} style={styles.button}>Home</Button>
+        </ScrollView>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        flexGrow: 1,
+        padding: 20,
         justifyContent: 'center',
-        padding: 16,
-    },
-    title: {
-        fontSize: 24,
-        marginBottom: 16,
-        textAlign: 'center',
     },
     input: {
-        marginBottom: 12,
+        marginBottom: 10,
     },
     button: {
-        marginTop: 12,
+        marginTop: 10,
+    },
+    selectedItem: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: 10,
+    },
+    image: {
+        width: 100,
+        height: 100,
+        borderRadius: 10,
+        marginRight: 10,
     },
 });
 

@@ -100,6 +100,10 @@ const LoginScreen = ({ navigation }) => {
             <Button mode="text" onPress={() => navigation.navigate('Register')} style={styles.button}>
                 Don't have an account? Register
             </Button>
+            {/* add link to completeProfile pickImage */}
+            <Button mode="text" onPress={() => navigation.navigate('CompleteProfile')} style={styles.button}>
+                Complete Profile
+            </Button>
         </View>
     );
 };
