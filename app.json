@@ -33,8 +33,18 @@
           "contactsPermission": "Allow $(PRODUCT_NAME) to access your contacts."
         }
       ],
-      "expo-image-picker",
-      "expo-location"
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow $(PRODUCT_NAME) to access your photos."
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationPermission": "Allow $(PRODUCT_NAME) to access your location."
+        }
+      ]
     ],
     "extra": {
       "eas": {
