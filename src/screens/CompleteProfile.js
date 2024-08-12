@@ -1,11 +1,19 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Alert, ScrollView, Modal } from 'react-native';
-import { TextInput, Button, Text, IconButton, Avatar, RadioButton } from 'react-native-paper';
+import { Text, TextInput, Button, IconButton, Avatar, RadioButton } from 'react-native-paper';
 import * as ImagePicker from 'expo-image-picker';
 import axios from '../utils/axiosConfig';
 import ContactCard from '../components/ContactCard';
-import { selectAndAddContact, addContactToList } from '../utils/contactUtils'; // Import the modularized functions
+import { selectAndAddContact, addContactToList } from '../utils/contactUtils';
 
+/**
+ * The CompleteProfileScreen component allows users to complete their profile by
+ * providing personal information, selecting contacts, and choosing places.
+ * 
+ * @param {Object} route - The navigation route object, contains parameters passed to this screen.
+ * @param {Object} navigation - The navigation object used for navigating between screens.
+ * @returns {JSX.Element} The rendered component.
+ */
 const CompleteProfileScreen = ({ route, navigation }) => {
     const [name, setName] = useState('');
     const [password, setPassword] = useState('');
@@ -18,6 +26,10 @@ const CompleteProfileScreen = ({ route, navigation }) => {
     const [selectedContact, setSelectedContact] = useState(null);
     const [selectedPhoneNumber, setSelectedPhoneNumber] = useState('');
 
+    /**
+     * Opens the image picker for the user to select a profile photo.
+     * Sets the selected photo to the state.
+     */
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -31,6 +43,10 @@ const CompleteProfileScreen = ({ route, navigation }) => {
         }
     };
 
+    /**
+     * Submits the completed profile to the backend server.
+     * Validates the inputs and alerts the user if any required fields are missing.
+     */
     const handleCompleteProfile = async () => {
         if (!name || !password || !photo || !address || contacts.length < 1 || places.length < 2) {
             Alert.alert('Error', 'Please fill all required fields');
@@ -55,14 +71,26 @@ const CompleteProfileScreen = ({ route, navigation }) => {
         }
     };
 
+    /**
+     * Removes a contact from the contacts state.
+     * 
+     * @param {String} id - The ID of the contact to be removed.
+     */
     const removeContact = (id) => {
         setContacts(contacts.filter(contact => contact.id !== id));
     };
 
+    /**
+     * Clears the selected profile photo from the state.
+     */
     const removePhoto = () => {
         setPhoto(null);
     };
 
+    /**
+     * Handles the selection of a phone number from the modal and adds the contact to the list.
+     * Closes the modal after the phone number is selected.
+     */
     const handlePhoneNumberSelection = () => {
         if (selectedPhoneNumber) {
             addContactToList(selectedContact, selectedPhoneNumber, contacts, setContacts);
@@ -175,7 +203,7 @@ const styles = StyleSheet.create({
     container: {
         flexGrow: 1,
         padding: 20,
-        justifyContent: 'center',
+        justifyContent: "center",
     },
     input: {
         marginBottom: 10,
@@ -184,40 +212,40 @@ const styles = StyleSheet.create({
         marginTop: 10,
     },
     selectedItem: {
-        flexDirection: 'row',
-        alignItems: 'center',
+        flexDirection: "row",
+        alignItems: "center",
         marginTop: 10,
-        justifyContent: 'space-between',
+        justifyContent: "space-between",
     },
     contactsContainer: {
         marginTop: 20,
     },
     contactsTitle: {
         fontSize: 16,
-        fontWeight: 'bold',
+        fontWeight: "bold",
         marginBottom: 10,
     },
     modalContainer: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
     },
     modalContent: {
-        width: '80%',
-        backgroundColor: 'white',
+        width: "80%",
+        backgroundColor: "white",
         padding: 20,
         borderRadius: 10,
         elevation: 5,
     },
     modalTitle: {
         fontSize: 18,
-        fontWeight: 'bold',
+        fontWeight: "bold",
         marginBottom: 10,
     },
     radioItem: {
-        flexDirection: 'row',
-        alignItems: 'center',
+        flexDirection: "row",
+        alignItems: "center",
         marginBottom: 10,
     },
 });
