@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Alert, ScrollView, Modal, FlatList } from 'react-native';
+import { View, StyleSheet, Alert, ScrollView, Modal, FlatList, SectionList } from 'react-native';
 import { TextInput, Button, Text, IconButton, Avatar, RadioButton } from 'react-native-paper';
 import * as ImagePicker from 'expo-image-picker';
 import * as Contacts from 'expo-contacts';
 import axios from '../utils/axiosConfig';
+
+import ContactCard from '../components/ContactCard';
 
 const CompleteProfileScreen = ({ route, navigation }) => {
     const [name, setName] = useState('');
@@ -141,9 +143,22 @@ const CompleteProfileScreen = ({ route, navigation }) => {
             <Button mode="contained" onPress={handleCompleteProfile} style={styles.button}>
                 Complete Profile
             </Button>
-            <Button mode="contained" onPress={handleContactSelection} style={styles.button}>
-                Select Contacts
-            </Button>
+            {contacts.length < 5 && <Button mode="contained" onPress={handleContactSelection} style={styles.button}>
+                Add Contacts
+            </Button>}
+
+            {/* Contacts List */}
+            {contacts.length > 0 && (
+                <View style={styles.contactsContainer}>
+                    <Text style={styles.contactsTitle}>Selected Contacts:</Text>
+                    {
+                        contacts.map((contact, index) =>
+                            <ContactCard key={index} contact={contact} onRemove={() => removeContact(contact.id)} />
+                        )
+                    }
+                </View>
+            )}
+
             {/* Navigate to home page */}
             <Button mode="contained" onPress={() => navigation.navigate('Home')} style={styles.button}>
                 Home
@@ -158,7 +173,7 @@ const CompleteProfileScreen = ({ route, navigation }) => {
             >
                 <View style={styles.modalContainer}>
                     <View style={styles.modalContent}>
-                        <Text style={styles.modalTitle}>Select WhatsApp Number</Text>
+                        <Text style={styles.modalTitle}>Select Phone Number</Text>
                         <RadioButton.Group
                             onValueChange={newValue => setSelectedPhoneNumber(newValue)}
                             value={selectedPhoneNumber}
@@ -169,6 +184,7 @@ const CompleteProfileScreen = ({ route, navigation }) => {
                                     <Text>{phone.number}</Text>
                                 </View>
                             ))}
+
                         </RadioButton.Group>
                         <Button mode="contained" onPress={handlePhoneNumberSelection} style={styles.button}>
                             Select
@@ -196,6 +212,18 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         marginTop: 10,
+        justifyContent: 'space-between',
+    },
+    contactsContainer: {
+        marginTop: 20,
+    },
+    contactsTitle: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginBottom: 10,
+    },
+    contactText: {
+        flex: 1,
     },
     modalContainer: {
         flex: 1,
