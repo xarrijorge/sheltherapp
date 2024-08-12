@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Alert, ScrollView, Modal, FlatList, SectionList } from 'react-native';
+import React, { useState } from 'react';
+import { View, StyleSheet, Alert, ScrollView, Modal } from 'react-native';
 import { TextInput, Button, Text, IconButton, Avatar, RadioButton } from 'react-native-paper';
 import * as ImagePicker from 'expo-image-picker';
-import * as Contacts from 'expo-contacts';
 import axios from '../utils/axiosConfig';
-
 import ContactCard from '../components/ContactCard';
+import { selectAndAddContact, addContactToList } from '../utils/contactUtils'; // Import the modularized functions
 
 const CompleteProfileScreen = ({ route, navigation }) => {
     const [name, setName] = useState('');
@@ -64,37 +63,10 @@ const CompleteProfileScreen = ({ route, navigation }) => {
         setPhoto(null);
     };
 
-    const handleContactSelection = async () => {
-        const { status } = await Contacts.requestPermissionsAsync();
-        if (status === 'granted') {
-            const result = await Contacts.presentContactPickerAsync({
-                fields: [Contacts.Fields.Name, Contacts.Fields.PhoneNumbers, Contacts.Fields.Emails],
-            });
-
-            if (result && result.phoneNumbers) {
-                if (result.phoneNumbers.length > 1) {
-                    setSelectedContact(result);
-                    setSelectedPhoneNumber(result.phoneNumbers[0].number); // Default selection
-                    setModalVisible(true); // Show modal if multiple phone numbers
-                } else {
-                    addContact(result, result.phoneNumbers[0].number);
-                }
-            }
-        }
-    };
-
-    const addContact = (contact, phoneNumber) => {
-        setContacts([...contacts, {
-            id: contact.id,
-            name: contact.name,
-            phone: phoneNumber,
-        }]);
-        setModalVisible(false);
-    };
-
     const handlePhoneNumberSelection = () => {
         if (selectedPhoneNumber) {
-            addContact(selectedContact, selectedPhoneNumber);
+            addContactToList(selectedContact, selectedPhoneNumber, contacts, setContacts);
+            setModalVisible(false);
         }
     };
 
@@ -143,19 +115,23 @@ const CompleteProfileScreen = ({ route, navigation }) => {
             <Button mode="contained" onPress={handleCompleteProfile} style={styles.button}>
                 Complete Profile
             </Button>
-            {contacts.length < 5 && <Button mode="contained" onPress={handleContactSelection} style={styles.button}>
-                Add Contacts
-            </Button>}
+            {contacts.length < 5 && (
+                <Button
+                    mode="contained"
+                    onPress={() => selectAndAddContact(contacts, setContacts, setSelectedContact, setSelectedPhoneNumber, setModalVisible)}
+                    style={styles.button}
+                >
+                    Add Contacts
+                </Button>
+            )}
 
             {/* Contacts List */}
             {contacts.length > 0 && (
                 <View style={styles.contactsContainer}>
                     <Text style={styles.contactsTitle}>Selected Contacts:</Text>
-                    {
-                        contacts.map((contact, index) =>
-                            <ContactCard key={index} contact={contact} onRemove={() => removeContact(contact.id)} />
-                        )
-                    }
+                    {contacts.map((contact, index) => (
+                        <ContactCard key={index} contact={contact} onRemove={() => removeContact(contact.id)} />
+                    ))}
                 </View>
             )}
 
@@ -184,7 +160,6 @@ const CompleteProfileScreen = ({ route, navigation }) => {
                                     <Text>{phone.number}</Text>
                                 </View>
                             ))}
-
                         </RadioButton.Group>
                         <Button mode="contained" onPress={handlePhoneNumberSelection} style={styles.button}>
                             Select
@@ -221,9 +196,6 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
         marginBottom: 10,
-    },
-    contactText: {
-        flex: 1,
     },
     modalContainer: {
         flex: 1,
