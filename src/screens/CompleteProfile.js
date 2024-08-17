@@ -128,17 +128,6 @@ const CompleteProfileScreen = ({ route, navigation }) => {
             console.log(error)
             Alert.alert('Error', error.response?.data?.error || 'Failed to complete profile');
         }
-        // const data = {
-        //     contacts,
-        //     name,
-        //     password,
-        //     address,
-        //     photo,
-        //     places: [...places],
-        //     email
-        // }
-        // Alert.alert('Success', JSON.stringify(data));
-
     };
 
     /**
