@@ -1,6 +1,5 @@
-// src/services/axiosConfig.js
 import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SecureStore from 'expo-secure-store';
 
 const instance = axios.create({
     baseURL: 'https://sheltherbackend-gk6ws4agna-uc.a.run.app/api', // Replace with your backend URL
@@ -11,32 +10,35 @@ const instance = axios.create({
     },
 });
 
-// Request interceptor to add headers
-instance.interceptors.request.use(
-    async (config) => {
-        // Retrieve the token from AsyncStorage
-        const token = await AsyncStorage.getItem('authToken');
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
+// Setup Axios interceptors
+export const setupAxiosInterceptors = (setIsLoading) => {
+    // Request interceptor to add headers
+    instance.interceptors.request.use(
+        async (config) => {
+            setIsLoading(true); // Start loading
+            const token = SecureStore.getItem('authToken');
+            if (token) {
+                config.headers.Authorization = `Bearer ${token}`;
+            }
+            return config;
+        },
+        (error) => {
+            setIsLoading(false); // Stop loading on request error
+            return Promise.reject(error);
         }
-        return config;
-    },
-    (error) => {
-        // Handle the request error here
-        return Promise.reject(error);
-    }
-);
+    );
 
-// Response interceptor to handle responses and errors
-instance.interceptors.response.use(
-    (response) => {
-        // Do something with the response data
-        return response;
-    },
-    (error) => {
-        // Handle the response error here
-        return Promise.reject(error);
-    }
-);
+    // Response interceptor to handle responses and errors
+    instance.interceptors.response.use(
+        (response) => {
+            setIsLoading(false); // Stop loading when response is received
+            return response;
+        },
+        (error) => {
+            setIsLoading(false); // Stop loading on response error
+            return Promise.reject(error);
+        }
+    );
+};
 
 export default instance;

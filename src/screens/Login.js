@@ -11,6 +11,11 @@ const LoginScreen = ({ navigation }) => {
     const [emailError, setEmailError] = useState('');
     const [passwordError, setPasswordError] = useState('');
 
+    /**
+     * Validates the inputs for the login form.
+     * 
+     * @returns {boolean} Returns true if all inputs are valid, otherwise false.
+     */
     const validateInputs = () => {
         let isValid = true;
 
@@ -37,6 +42,13 @@ const LoginScreen = ({ navigation }) => {
         return isValid;
     };
 
+    /**
+     * Handles the login functionality.
+     * 
+     * @async
+     * @function handleLogin
+     * @returns {Promise<void>} - A promise that resolves when the login process is completed.
+     */
     const handleLogin = async () => {
         if (!validateInputs()) {
             return;
