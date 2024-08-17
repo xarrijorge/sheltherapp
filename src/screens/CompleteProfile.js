@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Alert, ScrollView, Modal } from 'react-native';
-import { Text, TextInput, Button, IconButton, Avatar, RadioButton } from 'react-native-paper';
+import { Text, TextInput, Button, IconButton, Avatar, RadioButton, HelperText } from 'react-native-paper';
+import * as SecureStore from 'expo-secure-store';
 import * as ImagePicker from 'expo-image-picker';
 import axios from '../utils/axiosConfig';
 import ContactCard from '../components/ContactCard';
@@ -26,6 +27,10 @@ const CompleteProfileScreen = ({ route, navigation }) => {
     const [selectedContact, setSelectedContact] = useState(null);
     const [selectedPhoneNumber, setSelectedPhoneNumber] = useState('');
 
+    const email = route.params.email;
+
+    const completion = name && password && confirmPassword && photo && address && contacts.length > 0 
+
     /**
      * Opens the image picker for the user to select a profile photo.
      * Sets the selected photo to the state.
@@ -47,15 +52,65 @@ const CompleteProfileScreen = ({ route, navigation }) => {
      * Submits the completed profile to the backend server.
      * Validates the inputs and alerts the user if any required fields are missing.
      */
+    // function to check that passwords match and that they meet a minimum requirement
+    /**
+     * Validates the password and confirms that it meets the required criteria.
+     * 
+     * @returns {boolean} Returns true if the password is valid, otherwise false.
+     */
+    function checkPassword() {
+        let pass = password.trim();
+        let confirm = confirmPassword.trim();
+
+        // check that password is at least 8 characters long and that it contains at least one number and one letter and one special character and that it is not the same as the email and that it is not the same as the name and that it is not the same as the address and that it is not the same as the phone number
+        // check against a RegExp
+
+        // check that password and confirm password match
+        if (pass !== confirm) {
+            Alert.alert('Error', 'Passwords do not match');
+            throw new Error('Passwords do not match');
+        }
+
+        pass = pass.replace(/\s+/g, '');
+        if (pass.length < 8) {
+            Alert.alert('Error', 'Password must be at least 8 characters long');
+            throw new Error('Password must be at least 8 characters long');
+        }
+        if (!pass.match(/[a-z]/i)) {
+            Alert.alert('Error', 'Password must contain at least one letter');
+            throw new Error('Password must contain at least one letter');
+        }
+        if (!pass.match(/\d/)) {
+            Alert.alert('Error', 'Password must contain at least one number');
+            throw new Error('Password must contain at least one number');
+        }
+        if (!pass.match(/[^a-z\d]/i)) {
+            Alert.alert('Error', 'Password must contain at least one special character');
+            throw new Error('Password must contain at least one special character');
+        }
+        if (pass=== email) {
+            Alert.alert('Error', 'Password cannot be the same as the email');
+            throw new Error('Password cannot be the same as the email');
+        }
+    }
+
+    /**
+     * Handles the completion of user profile.
+     * 
+     * @async
+     * @function handleCompleteProfile
+     * @returns {Promise<void>}
+     */
     const handleCompleteProfile = async () => {
-        if (!name || !password || !photo || !address || contacts.length < 1 || places.length < 2) {
+        if (!name || !password || !photo || !address || contacts.length < 1) {
             Alert.alert('Error', 'Please fill all required fields');
             return;
         }
 
+        checkPassword()
         try {
-            const response = await axios.post('/auth/complete-profile', {
-                email: route.params.email, // Assuming email is passed from the previous screen
+            const response = await axios.post('/auth/complete', {
+                email,
                 password,
                 name,
                 photo,
@@ -64,11 +119,26 @@ const CompleteProfileScreen = ({ route, navigation }) => {
                 places
             });
 
-            Alert.alert('Success', 'Profile completed successfully');
-            navigation.navigate('Home');
+            Alert.alert('Success', 'Profile completed successfully', response);
+            navigation.reset({
+                index: 0,
+                routes: [{ name: 'Home' }],
+            });
         } catch (error) {
+            console.log(error)
             Alert.alert('Error', error.response?.data?.error || 'Failed to complete profile');
         }
+        // const data = {
+        //     contacts,
+        //     name,
+        //     password,
+        //     address,
+        //     photo,
+        //     places: [...places],
+        //     email
+        // }
+        // Alert.alert('Success', JSON.stringify(data));
+
     };
 
     /**
@@ -134,15 +204,14 @@ const CompleteProfileScreen = ({ route, navigation }) => {
                 secureTextEntry
                 style={styles.input}
             />
+            {(confirmPassword !== "" && password !== confirmPassword) && <HelperText type='error' >Password does not match.</HelperText>}
             <TextInput
                 label="Address"
                 value={address}
                 onChangeText={setAddress}
                 style={styles.input}
             />
-            <Button mode="contained" onPress={handleCompleteProfile} style={styles.button}>
-                Complete Profile
-            </Button>
+            
             {contacts.length < 5 && (
                 <Button
                     mode="contained"
@@ -162,10 +231,8 @@ const CompleteProfileScreen = ({ route, navigation }) => {
                     ))}
                 </View>
             )}
-
-            {/* Navigate to home page */}
-            <Button mode="contained" onPress={() => navigation.navigate('Home')} style={styles.button}>
-                Home
+            <Button disabled={!completion} mode="contained" onPress={handleCompleteProfile} style={styles.button}>
+                Complete Profile
             </Button>
 
             {/* Modal for selecting phone number */}
