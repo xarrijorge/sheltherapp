@@ -12,14 +12,21 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "We need your location to show nearby places."
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/square.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.shelther.app"
+      "package": "com.shelther.app",
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION"
+      ]
     },
     "web": {
       "favicon": "./assets/ico.png"

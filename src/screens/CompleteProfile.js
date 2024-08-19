@@ -1,20 +1,13 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Alert, ScrollView, Modal } from 'react-native';
 import { Text, TextInput, Button, IconButton, Avatar, RadioButton, HelperText } from 'react-native-paper';
-import * as SecureStore from 'expo-secure-store';
 import * as ImagePicker from 'expo-image-picker';
 import axios from '../utils/axiosConfig';
 import ContactCard from '../components/ContactCard';
 import { selectAndAddContact, addContactToList } from '../utils/contactUtils';
+import PlaceCard from '../components/PlaceCard';
+import { SelectPlace } from '../utils/placesUtils';
 
-/**
- * The CompleteProfileScreen component allows users to complete their profile by
- * providing personal information, selecting contacts, and choosing places.
- * 
- * @param {Object} route - The navigation route object, contains parameters passed to this screen.
- * @param {Object} navigation - The navigation object used for navigating between screens.
- * @returns {JSX.Element} The rendered component.
- */
 const CompleteProfileScreen = ({ route, navigation }) => {
     const [name, setName] = useState('');
     const [password, setPassword] = useState('');
@@ -23,18 +16,15 @@ const CompleteProfileScreen = ({ route, navigation }) => {
     const [address, setAddress] = useState('');
     const [contacts, setContacts] = useState([]);
     const [places, setPlaces] = useState([]);
-    const [modalVisible, setModalVisible] = useState(false);
+    const [contactModalVisible, setContactModalVisible] = useState(false); // Separate modal state for contacts
+    const [placeModalVisible, setPlaceModalVisible] = useState(false); // Separate modal state for places
     const [selectedContact, setSelectedContact] = useState(null);
     const [selectedPhoneNumber, setSelectedPhoneNumber] = useState('');
 
     const email = route.params.email;
 
-    const completion = name && password && confirmPassword && photo && address && contacts.length > 0 
+    const completion = name && password && confirmPassword && photo && address && contacts.length > 0;
 
-    /**
-     * Opens the image picker for the user to select a profile photo.
-     * Sets the selected photo to the state.
-     */
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -48,24 +38,10 @@ const CompleteProfileScreen = ({ route, navigation }) => {
         }
     };
 
-    /**
-     * Submits the completed profile to the backend server.
-     * Validates the inputs and alerts the user if any required fields are missing.
-     */
-    // function to check that passwords match and that they meet a minimum requirement
-    /**
-     * Validates the password and confirms that it meets the required criteria.
-     * 
-     * @returns {boolean} Returns true if the password is valid, otherwise false.
-     */
-    function checkPassword() {
+    const checkPassword = () => {
         let pass = password.trim();
         let confirm = confirmPassword.trim();
 
-        // check that password is at least 8 characters long and that it contains at least one number and one letter and one special character and that it is not the same as the email and that it is not the same as the name and that it is not the same as the address and that it is not the same as the phone number
-        // check against a RegExp
-
-        // check that password and confirm password match
         if (pass !== confirm) {
             Alert.alert('Error', 'Passwords do not match');
             throw new Error('Passwords do not match');
@@ -88,26 +64,19 @@ const CompleteProfileScreen = ({ route, navigation }) => {
             Alert.alert('Error', 'Password must contain at least one special character');
             throw new Error('Password must contain at least one special character');
         }
-        if (pass=== email) {
+        if (pass === email) {
             Alert.alert('Error', 'Password cannot be the same as the email');
             throw new Error('Password cannot be the same as the email');
         }
-    }
+    };
 
-    /**
-     * Handles the completion of user profile.
-     * 
-     * @async
-     * @function handleCompleteProfile
-     * @returns {Promise<void>}
-     */
     const handleCompleteProfile = async () => {
         if (!name || !password || !photo || !address || contacts.length < 1) {
             Alert.alert('Error', 'Please fill all required fields');
             return;
         }
 
-        checkPassword()
+        checkPassword();
         try {
             const response = await axios.post('/auth/complete', {
                 email,
@@ -125,42 +94,29 @@ const CompleteProfileScreen = ({ route, navigation }) => {
                 routes: [{ name: 'Home' }],
             });
         } catch (error) {
-            console.log(error)
+            console.log(error);
             Alert.alert('Error', error.response?.data?.error || 'Failed to complete profile');
         }
     };
 
-    /**
-     * Removes a contact from the contacts state.
-     * 
-     * @param {String} id - The ID of the contact to be removed.
-     */
     const removeContact = (id) => {
         setContacts(contacts.filter(contact => contact.id !== id));
     };
 
-    /**
-     * Clears the selected profile photo from the state.
-     */
     const removePhoto = () => {
         setPhoto(null);
     };
 
-    /**
-     * Handles the selection of a phone number from the modal and adds the contact to the list.
-     * Closes the modal after the phone number is selected.
-     */
     const handlePhoneNumberSelection = () => {
         if (selectedPhoneNumber) {
             addContactToList(selectedContact, selectedPhoneNumber, contacts, setContacts);
-            setModalVisible(false);
+            setContactModalVisible(false); // Close the contacts modal
         }
     };
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
             <View style={{ marginBottom: 20 }}>
-                {/* Image Section */}
                 {!photo && (
                     <Button mode="contained" onPress={pickImage} style={styles.button}>
                         {photo ? 'Change Image' : 'Pick an Image'}
@@ -193,7 +149,7 @@ const CompleteProfileScreen = ({ route, navigation }) => {
                 secureTextEntry
                 style={styles.input}
             />
-            {(confirmPassword !== "" && password !== confirmPassword) && <HelperText type='error' >Password does not match.</HelperText>}
+            {(confirmPassword !== "" && password !== confirmPassword) && <HelperText type='error'>Password does not match.</HelperText>}
             <TextInput
                 label="Address"
                 value={address}
@@ -204,14 +160,13 @@ const CompleteProfileScreen = ({ route, navigation }) => {
             {contacts.length < 5 && (
                 <Button
                     mode="contained"
-                    onPress={() => selectAndAddContact(contacts, setContacts, setSelectedContact, setSelectedPhoneNumber, setModalVisible)}
+                    onPress={() => selectAndAddContact(contacts, setContacts, setSelectedContact, setSelectedPhoneNumber, setContactModalVisible)}
                     style={styles.button}
                 >
                     Add Contacts
                 </Button>
             )}
 
-            {/* Contacts List */}
             {contacts.length > 0 && (
                 <View style={styles.contactsContainer}>
                     <Text style={styles.contactsTitle}>Selected Contacts:</Text>
@@ -220,16 +175,48 @@ const CompleteProfileScreen = ({ route, navigation }) => {
                     ))}
                 </View>
             )}
+
+            {places.length < 5 && (
+                <Button mode="contained" onPress={() => setPlaceModalVisible(true)} style={styles.button}>
+                    Add Places
+                </Button>
+            )}
+
+            {places.length > 0 && (
+                <View style={styles.placesContainer}>
+                    <Text style={styles.placesTitle}>Selected Places:</Text>
+                    {places.map((place, index) => (
+                        <PlaceCard key={index} place={place} onRemove={() => setPlaces(places.filter(p => p.id !== place.id))} />
+                    ))}
+                </View>
+            )}
+
             <Button disabled={!completion} mode="contained" onPress={handleCompleteProfile} style={styles.button}>
                 Complete Profile
             </Button>
+          {/* Modal for selecting places */}
+           
+          <Modal
+            visible={placeModalVisible}
+            animationType="slide"
+            transparent={true}
+            onRequestClose={() => setPlaceModalVisible(false)}
+        >
+            <View style={styles.modalContainer}>
+                <View style={styles.modalContent}>
+                    <ScrollView contentContainerStyle={styles.scrollViewContent}>
+                        <SelectPlace />
+                    </ScrollView>
+                </View>
+            </View>
+        </Modal>
 
             {/* Modal for selecting phone number */}
             <Modal
-                visible={modalVisible}
+                visible={contactModalVisible} // Use the contact modal state
                 animationType="slide"
                 transparent={true}
-                onRequestClose={() => setModalVisible(false)}
+                onRequestClose={() => setContactModalVisible(false)}
             >
                 <View style={styles.modalContainer}>
                     <View style={styles.modalContent}>
@@ -281,22 +268,30 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         marginBottom: 10,
     },
+    placesContainer: {
+        marginTop: 20,
+    },
+    placesTitle: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginBottom: 10,
+    },
     modalContainer: {
         flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(10, 10, 10, 0.5)',
     },
     modalContent: {
-        width: "80%",
-        backgroundColor: "white",
-        padding: 20,
+        width: '90%',
+        height: 'auto',
+        backgroundColor: 'white',
         borderRadius: 10,
         elevation: 5,
     },
     modalTitle: {
         fontSize: 18,
-        fontWeight: "bold",
+        fontWeight: 'bold',
         marginBottom: 10,
     },
     radioItem: {

@@ -113,7 +113,7 @@ const LoginScreen = ({ navigation }) => {
                 Don't have an account? Register
             </Button>
             {/* add link to completeProfile pickImage */}
-            <Button mode="text" onPress={() => navigation.navigate('CompleteProfile')} style={styles.button}>
+            <Button mode="text" onPress={() => navigation.navigate('CompleteProfile', {email: 'uza9tails@gmail.com'})} style={styles.button}>
                 Complete Profile
             </Button>
         </View>
