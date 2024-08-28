@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { View, StyleSheet, Alert, ScrollView, Modal } from 'react-native';
 import { Text, TextInput, Button, IconButton, Avatar, RadioButton, HelperText, Icon } from 'react-native-paper';
 import * as ImagePicker from 'expo-image-picker';
+import * as FileSystem from 'expo-file-system';
 import axios from '../utils/axiosConfig';
 import ContactCard from '../components/ContactCard';
 import { selectAndAddContact, addContactToList } from '../utils/contactUtils';
 import PlaceCard from '../components/PlaceCard';
-import { SelectPlace } from '../utils/placesUtils';
 
 const CompleteProfileScreen = ({ route, navigation }) => {
     const [name, setName] = useState('');
@@ -24,6 +24,42 @@ const CompleteProfileScreen = ({ route, navigation }) => {
 
     const completion = name && password && confirmPassword && photo && address && contacts.length > 0;
 
+    const moveImageToShelter = async (uri) => {
+        try {
+            // Define the shelter directory and file path
+            const SHELTER_DIRECTORY = `${FileSystem.documentDirectory}shelter/`;
+            const PROFILE_PHOTO_FILENAME = 'profile_photo.jpg';
+            const newUri = `${SHELTER_DIRECTORY}${PROFILE_PHOTO_FILENAME}`;
+    
+            // Check if the shelter directory exists
+            const dirInfo = await FileSystem.getInfoAsync(SHELTER_DIRECTORY);
+            if (!dirInfo.exists) {
+                // If the directory doesn't exist, create it
+                await FileSystem.makeDirectoryAsync(SHELTER_DIRECTORY, { intermediates: true });
+                console.log('Shelter directory created:', SHELTER_DIRECTORY);
+            }
+    
+            // Check if the file already exists at the destination
+            const fileInfo = await FileSystem.getInfoAsync(newUri);
+            if (fileInfo.exists) {
+                // If the file exists, delete it to avoid duplicates or overwrite
+                await FileSystem.deleteAsync(newUri);
+            }
+    
+            // Move the image from the original URI to the new URI in the "shelter" directory
+            await FileSystem.moveAsync({
+                from: uri,
+                to: newUri,
+            });
+    
+            console.log('Image moved to:', newUri);
+            return newUri; // Return the new path of the moved image
+        } catch (error) {
+            console.error('Error moving image:', error);
+            throw error; // If there's an error, log it and rethrow the error
+        }
+    }; 
+    
     const pickImage = async () => {
         try {
             let result = await ImagePicker.launchImageLibraryAsync({
@@ -37,8 +73,12 @@ const CompleteProfileScreen = ({ route, navigation }) => {
     
             if (!result.canceled) {
                 if (result.assets && result.assets.length > 0) {
-                    setPhoto(result.assets[0].uri);
-                    console.log(photo)
+                    const uri = result.assets[0].uri;
+                    setPhoto(uri); // Update the state with the selected image URI
+    
+                    // Move the image to the shelter directory
+                    const newUri = await moveImageToShelter(uri);
+                    console.log('Image moved to shelter directory:', newUri);
                 } else {
                     console.log('No assets found in the result');
                 }
@@ -48,7 +88,7 @@ const CompleteProfileScreen = ({ route, navigation }) => {
         } catch (error) {
             console.error('Error picking image:', error);
         }
-    }; 
+    };
 
     const checkPassword = () => {
         let pass = password.trim();
