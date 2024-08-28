@@ -9,7 +9,7 @@ export const SelectPlace = () => {
     const ref = useRef();
 
     useEffect(() => {
-        ref.current?.setAddressText('Some Text');
+        ref.current?.setAddressText('');
         (async () => {
             let { status } = await Location.requestForegroundPermissionsAsync();
             if (status !== 'granted') {
