@@ -4,7 +4,7 @@ import { View, StyleSheet, Alert } from 'react-native';
 import { TextInput, Button, Text, HelperText } from 'react-native-paper';
 import axios from '../utils/axiosConfig';
 import * as SecureStore from 'expo-secure-store';
-
+import AsyncStorage from '@react-native-async-storage/async-storage'
 const LoginScreen = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -62,8 +62,9 @@ const LoginScreen = ({ navigation }) => {
             await SecureStore.setItemAsync('authToken', tokens.accessToken);
             await SecureStore.setItemAsync('refreshToken', tokens.refreshToken);
             // store user data
-            const newUser = { ...user, loggedIn: true }
-            await SecureStore.setItemAsync('userData', JSON.stringify(newUser));
+            const newUser = (({ token, ...rest }) => rest)(response.data)
+
+            await AsyncStorage.setItem('userData', JSON.stringify(newUser));
 
             // Navigate to Home screen
             navigation.reset({
