@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Alert, ScrollView, Modal } from 'react-native';
-import { Text, TextInput, Button, IconButton, Avatar, RadioButton, HelperText } from 'react-native-paper';
+import { Text, TextInput, Button, IconButton, Avatar, RadioButton, HelperText, Icon } from 'react-native-paper';
 import * as ImagePicker from 'expo-image-picker';
 import axios from '../utils/axiosConfig';
 import ContactCard from '../components/ContactCard';
@@ -17,7 +17,6 @@ const CompleteProfileScreen = ({ route, navigation }) => {
     const [contacts, setContacts] = useState([]);
     const [places, setPlaces] = useState([]);
     const [contactModalVisible, setContactModalVisible] = useState(false); // Separate modal state for contacts
-    const [placeModalVisible, setPlaceModalVisible] = useState(false); // Separate modal state for places
     const [selectedContact, setSelectedContact] = useState(null);
     const [selectedPhoneNumber, setSelectedPhoneNumber] = useState('');
 
@@ -26,17 +25,30 @@ const CompleteProfileScreen = ({ route, navigation }) => {
     const completion = name && password && confirmPassword && photo && address && contacts.length > 0;
 
     const pickImage = async () => {
-        let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.All,
-            allowsEditing: true,
-            aspect: [1, 1],
-            quality: 1,
-        });
-
-        if (!result.canceled) {
-            setPhoto(result.assets[0].uri);
+        try {
+            let result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.All,
+                allowsEditing: true,
+                aspect: [1, 1],
+                quality: 1,
+            });
+    
+            console.log('ImagePicker result:', result);
+    
+            if (!result.canceled) {
+                if (result.assets && result.assets.length > 0) {
+                    setPhoto(result.assets[0].uri);
+                    console.log(photo)
+                } else {
+                    console.log('No assets found in the result');
+                }
+            } else {
+                console.log('Image picking was canceled');
+            }
+        } catch (error) {
+            console.error('Error picking image:', error);
         }
-    };
+    }; 
 
     const checkPassword = () => {
         let pass = password.trim();
@@ -75,29 +87,43 @@ const CompleteProfileScreen = ({ route, navigation }) => {
             Alert.alert('Error', 'Please fill all required fields');
             return;
         }
-
-        checkPassword();
+    
         try {
-            const response = await axios.post('/auth/complete', {
+            checkPassword();
+    
+            const data = {
                 email,
                 password,
                 name,
                 photo,
                 address,
                 contacts,
-                places
-            });
-
-            Alert.alert('Success', 'Profile completed successfully', response);
-            navigation.reset({
-                index: 0,
-                routes: [{ name: 'Home' }],
-            });
+            };
+    
+            console.log('Sending data:', data);
+    
+            const response = await axios.post('/auth/complete', data);
+            console.log('Response status:', response.status);
+            console.log('Response data:', response.data);
+    
+            if (response.status === 200) {
+                Alert.alert('Success', 'Profile completed successfully');
+                navigation.reset({
+                    index: 0,
+                    routes: [{ name: 'Home' }],
+                });
+            } else {
+                Alert.alert('Error', 'Unexpected response from server');
+            }
         } catch (error) {
-            console.log(error);
+            console.error('Error in handleCompleteProfile:', error);
+            if (error.response) {
+                console.log('Error response:', error.response.data);
+                console.log('Error status:', error.response.status);
+            }
             Alert.alert('Error', error.response?.data?.error || 'Failed to complete profile');
         }
-    };
+    }; 
 
     const removeContact = (id) => {
         setContacts(contacts.filter(contact => contact.id !== id));
@@ -151,7 +177,7 @@ const CompleteProfileScreen = ({ route, navigation }) => {
             />
             {(confirmPassword !== "" && password !== confirmPassword) && <HelperText type='error'>Password does not match.</HelperText>}
             <TextInput
-                label="Address"
+                label="Home Address"
                 value={address}
                 onChangeText={setAddress}
                 style={styles.input}
@@ -176,11 +202,6 @@ const CompleteProfileScreen = ({ route, navigation }) => {
                 </View>
             )}
 
-            {places.length < 5 && (
-                <Button mode="contained" onPress={() => setPlaceModalVisible(true)} style={styles.button}>
-                    Add Places
-                </Button>
-            )}
 
             {places.length > 0 && (
                 <View style={styles.placesContainer}>
@@ -194,22 +215,6 @@ const CompleteProfileScreen = ({ route, navigation }) => {
             <Button disabled={!completion} mode="contained" onPress={handleCompleteProfile} style={styles.button}>
                 Complete Profile
             </Button>
-          {/* Modal for selecting places */}
-           
-          <Modal
-            visible={placeModalVisible}
-            animationType="slide"
-            transparent={true}
-            onRequestClose={() => setPlaceModalVisible(false)}
-        >
-            <View style={styles.modalContainer}>
-                <View style={styles.modalContent}>
-                    <ScrollView contentContainerStyle={styles.scrollViewContent}>
-                        <SelectPlace />
-                    </ScrollView>
-                </View>
-            </View>
-        </Modal>
 
             {/* Modal for selecting phone number */}
             <Modal
@@ -280,12 +285,14 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'rgba(10, 10, 10, 0.5)',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
     modalContent: {
         width: '90%',
-        height: 'auto',
+        // maxHeight: '80%',
+        minHeight: 100,
         backgroundColor: 'white',
+        padding: 20,
         borderRadius: 10,
         elevation: 5,
     },
