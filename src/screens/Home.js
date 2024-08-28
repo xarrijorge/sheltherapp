@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet, TouchableOpacity, Animated, Easing, Alert } from 'react-native';
 import { Gyroscope } from 'expo-sensors';
 import React, { useState, useEffect, useRef } from 'react';
+import * as Location from 'expo-location';
 
 export default function Home() {
     const [{ x, y, z }, setData] = useState({ x: 0, y: 0, z: 0 });
@@ -30,8 +31,52 @@ export default function Home() {
         }
     };
 
-    function sendBroadCastMessage() {
-        Alert.alert('Emergency Sent', 'The emergency alert has been sent!');
+    async function getLocation() {
+        try {
+            const { status } = await Location.requestForegroundPermissionsAsync();
+            if (status !== 'granted') {
+                console.log('Location permission not granted');
+                return null;
+            }
+    
+            const { coords } = await Location.getCurrentPositionAsync({});
+            return {
+                latitude: coords.latitude,
+                longitude: coords.longitude,
+            };
+        } catch (error) {
+            console.error('Error getting location:', error);
+            return null;
+        }
+    }
+    
+    async function sendBroadCastMessage() {
+        const location = await getLocation();
+    
+        const locationMessage = location
+            ? `Location: ${location.latitude}, ${location.longitude}`
+            : 'Location data not available';
+    
+        if (alertMode === 'Standby') {
+            Alert.alert(
+                'Confirm Emergency',
+                `Are you sure you want to send the emergency alert?\n${locationMessage}`,
+                [
+                    {
+                        text: 'Cancel',
+                        style: 'cancel',
+                    },
+                    {
+                        text: 'Yes',
+                        onPress: () => {
+                            Alert.alert('Emergency Sent', `The emergency alert has been sent!\n${locationMessage}`);
+                        },
+                    },
+                ]
+            );
+        } else if (alertMode === 'Panic') {
+            Alert.alert('Emergency Sent', `The emergency alert has been sent!\n${locationMessage}`);
+        }
     }
 
     const checkVerticalShake = (data) => {
