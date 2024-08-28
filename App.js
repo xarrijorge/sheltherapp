@@ -8,7 +8,7 @@ import * as FileSystem from 'expo-file-system';
 const App = () => {
   const { isLoading, setIsLoading } = useLoading();
 
-  const SHELTER_DIRECTORY = `${FileSystem.documentDirectory}.shelter/`; // Hidden directory
+  const SHELTER_DIRECTORY = `${FileSystem.documentDirectory}shelter/`; // Hidden directory
 
   useEffect(() => {
     setupAxiosInterceptors(setIsLoading);
