@@ -28,7 +28,7 @@ export const SelectPlace = () => {
                     setLocation(details);
                 }}
                 query={{
-                    key: 'AIzaSyC6R4F4bmF_mh5xyuuWvDGKVB4B6j23Xks',
+                    key: '',
                     language: 'en',
                     components: `country:${country}`,
                 }}
