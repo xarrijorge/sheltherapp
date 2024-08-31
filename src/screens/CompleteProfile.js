@@ -7,6 +7,8 @@ import axios from '../utils/axiosConfig';
 import ContactCard from '../components/ContactCard';
 import { selectAndAddContact, addContactToList } from '../utils/contactUtils';
 import PlaceCard from '../components/PlaceCard';
+import * as AsyncStorage from  '@react-native-async-storage/async-storage';
+import * as SecureStore from 'expo-secure-store';
 
 const CompleteProfileScreen = ({ route, navigation }) => {
     const [name, setName] = useState('');
@@ -143,11 +145,14 @@ const CompleteProfileScreen = ({ route, navigation }) => {
             console.log('Sending data:', data);
     
             const response = await axios.post('/auth/complete', data);
-            console.log('Response status:', response.status);
-            console.log('Response data:', response.data);
     
             if (response.status === 200) {
                 Alert.alert('Success', 'Profile completed successfully');
+                await AsyncStorage.setItem('userData', JSON.stringify({ loggedIn: true, photo, name, email, address, contacts }));
+                // Store the token in AsyncStorage
+                await SecureStore.setItemAsync('authToken', response.token.accessToken);
+                await SecureStore.setItemAsync('refreshToken', response.token.refreshToken);
+
                 navigation.reset({
                     index: 0,
                     routes: [{ name: 'Home' }],
