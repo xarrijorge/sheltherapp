@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { View, StyleSheet, Modal, Alert } from 'react-native';
 import { Text, Button, RadioButton } from 'react-native-paper';
 import useUserStore from '../stores/userStore';
@@ -8,39 +8,63 @@ const ContactSelector = () => {
   const [contactModalVisible, setContactModalVisible] = useState(false);
   const [selectedContact, setSelectedContact] = useState(null);
   const [selectedPhoneNumber, setSelectedPhoneNumber] = useState('');
-  const addContact = useUserStore(state => state.addContact);
-  const [contacts, setContacts] = useState([]);
+  
+  // Use Zustand store
+  const { contacts, addContact, setContacts } = useUserStore();
 
-  const handlePhoneNumberSelection = () => {
+  const handlePhoneNumberSelection = useCallback(() => {
     if (selectedContact && selectedPhoneNumber) {
-      addContact({
+      const newContact = {
         id: selectedContact.id,
         name: selectedContact.name,
         phone: selectedPhoneNumber,
-      });
-      setContacts([...contacts, {
-        id: selectedContact.id,
-        name: selectedContact.name,
-        phone: selectedPhoneNumber,
-      }]);
-      setContactModalVisible(false); // Close the contacts modal
-      console.log('Selected contact:', selectedContact);
+      };
+      addContact(newContact);
+      setContactModalVisible(false);
     } else {
       Alert.alert('Error', 'No phone number selected.');
     }
-  };
+  }, [selectedContact, selectedPhoneNumber, addContact]);
+
+  const handleAddContact = useCallback(async () => {
+    try {
+      await selectAndAddContact(
+        contacts,
+        (newContacts) => {
+          setContacts(newContacts);
+        },
+        (contact) => {
+          console.log('Selected contact:', contact);
+          if (contact?.phoneNumbers?.length === 1) {
+            const newContact = {
+              id: contact.id,
+              name: contact.name,
+              phone: contact.phoneNumbers[0].number,
+            };
+            addContact(newContact);
+          } else if (contact?.phoneNumbers?.length > 1) {
+            setSelectedContact(contact);
+            setSelectedPhoneNumber(contact.phoneNumbers[0]?.number || '');
+            setContactModalVisible(true);
+          } else {
+            Alert.alert('Error', 'No phone numbers available for this contact.');
+          }
+        },
+        setSelectedPhoneNumber,
+        setContactModalVisible
+      );
+    } catch (error) {
+      console.error('Error handling contact addition:', error);
+    }
+  }, [contacts, addContact, setContacts]);
+
+  console.log('Current contacts:', contacts);
 
   return (
     <View>
       <Button
         mode="contained"
-        onPress={() => selectAndAddContact(
-          contacts,
-          setContacts,
-          setSelectedContact,
-          setSelectedPhoneNumber,
-          setContactModalVisible
-        )}
+        onPress={handleAddContact}
         style={styles.button}
       >
         Add Contacts
@@ -59,16 +83,12 @@ const ContactSelector = () => {
               onValueChange={newValue => setSelectedPhoneNumber(newValue)}
               value={selectedPhoneNumber}
             >
-              {selectedContact?.phoneNumbers?.length > 0 ? (
-                selectedContact.phoneNumbers.map((phone, index) => (
-                  <View key={index} style={styles.radioItem}>
-                    <RadioButton value={phone.number} />
-                    <Text>{phone.number}</Text>
-                  </View>
-                ))
-              ) : (
-                <Text>No phone numbers available</Text>
-              )}
+              {selectedContact?.phoneNumbers?.map((phone, index) => (
+                <View key={index} style={styles.radioItem}>
+                  <RadioButton value={phone.number} />
+                  <Text>{phone.number}</Text>
+                </View>
+              ))}
             </RadioButton.Group>
             <Button mode="contained" onPress={handlePhoneNumberSelection} style={styles.button}>
               Select
