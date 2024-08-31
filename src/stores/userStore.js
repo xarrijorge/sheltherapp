@@ -1,5 +1,6 @@
 import {create} from 'zustand'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import axios from '../utils/axiosConfig'
 
 const useUserStore = create((set) => ({
   user: null,
@@ -20,9 +21,11 @@ const useUserStore = create((set) => ({
     places: [...state.places, place]
   })),
   
-  removeContact: (id) => set((state) => ({
+  removeContact: (id) => set((state) => {
     contacts: state.contacts.filter(contact => contact.id !== id)
-  })),
+    // make api call
+    axios.delete(`/contacts/${id}`)
+  }),
 
   remotePlace: (id) => set((state) => ({
     places: state.places.filter(place => place.id !== id)

@@ -1,21 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Text, View, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import ContactCard from '../components/ContactCard';
 import useUserStore from '../stores/userStore';
+import ContactSelector from '../components/ContactSelector';
 
 const ContactsScreen = () => {
-    const contacts = useUserStore(state => state.contacts)
-    const removeContact = useUserStore(state => state.removeContact)
-    const saveUserData = useUserStore(state => state.saveUserData)
-
+  const contacts = useUserStore(state => state.contacts)
+    
     useEffect(() => {
         useUserStore.getState().loadUserData()
       }, []) 
-
-    useEffect(() => {
-        console.log('contacts', contacts);
-    }, [contacts]);
 
     const handleRemoveContact = (id) => {
         Alert.alert(
@@ -34,12 +28,6 @@ const ContactsScreen = () => {
         <ContactCard contact={item} onRemove={() => handleRemoveContact(item.id)} />
     );
 
-    const addContact = () => {
-        // Placeholder for add contact functionality
-        console.log('Add Contact button pressed');
-        // Implement navigation or modal to add new contact
-    };
-
     return (
         <View style={styles.screen}>
             <FlatList
@@ -48,9 +36,7 @@ const ContactsScreen = () => {
                 keyExtractor={(item, index) => index}
                 contentContainerStyle={styles.listContainer}
             />
-            <TouchableOpacity style={styles.addButton} onPress={addContact}>
-                <Text style={styles.addButtonText}>Add Contact</Text>
-            </TouchableOpacity>
+            <ContactSelector />
         </View>
     );
 };

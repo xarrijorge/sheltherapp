@@ -5,10 +5,10 @@ import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import axios from '../utils/axiosConfig';
 import ContactCard from '../components/ContactCard';
-import { selectAndAddContact, addContactToList } from '../utils/contactUtils';
 import PlaceCard from '../components/PlaceCard';
 import * as AsyncStorage from  '@react-native-async-storage/async-storage';
 import * as SecureStore from 'expo-secure-store';
+import ContactSelector from '../components/ContactSelector';
 
 const CompleteProfileScreen = ({ route, navigation }) => {
     const [name, setName] = useState('');
@@ -178,13 +178,11 @@ const CompleteProfileScreen = ({ route, navigation }) => {
         setPhoto(null);
     };
 
-    const handlePhoneNumberSelection = () => {
-        if (selectedPhoneNumber) {
-            addContactToList(selectedContact, selectedPhoneNumber, contacts, setContacts);
-            setContactModalVisible(false); // Close the contacts modal
-        }
+    const addContact = (newContact) => {
+        setContacts(prevContacts => [...prevContacts, newContact]);
     };
 
+   
     return (
         <ScrollView contentContainerStyle={styles.container}>
             <View style={{ marginBottom: 20 }}>
@@ -229,13 +227,7 @@ const CompleteProfileScreen = ({ route, navigation }) => {
             />
             
             {contacts.length < 5 && (
-                <Button
-                    mode="contained"
-                    onPress={() => selectAndAddContact(contacts, setContacts, setSelectedContact, setSelectedPhoneNumber, setContactModalVisible)}
-                    style={styles.button}
-                >
-                    Add Contacts
-                </Button>
+               <ContactSelector onContactSelected={addContact} /> 
             )}
 
             {contacts.length > 0 && (
@@ -248,14 +240,7 @@ const CompleteProfileScreen = ({ route, navigation }) => {
             )}
 
 
-            {places.length > 0 && (
-                <View style={styles.placesContainer}>
-                    <Text style={styles.placesTitle}>Selected Places:</Text>
-                    {places.map((place, index) => (
-                        <PlaceCard key={index} place={place} onRemove={() => setPlaces(places.filter(p => p.id !== place.id))} />
-                    ))}
-                </View>
-            )}
+           
 
             <Button disabled={!completion} mode="contained" onPress={handleCompleteProfile} style={styles.button}>
                 Complete Profile
