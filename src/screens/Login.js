@@ -4,12 +4,16 @@ import { View, StyleSheet, Alert } from 'react-native';
 import { TextInput, Button, Text, HelperText } from 'react-native-paper';
 import axios from '../utils/axiosConfig';
 import * as SecureStore from 'expo-secure-store';
-import AsyncStorage from '@react-native-async-storage/async-storage'
+import useUserStore from '../stores/userStore';
 const LoginScreen = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [emailError, setEmailError] = useState('');
     const [passwordError, setPasswordError] = useState('');
+    const setUser = useUserStore(state => state.setUser)
+    const setContacts = useUserStore(state => state.setContacts)
+    const setPlaces = useUserStore(state => state.setPlaces)
+    const saveUserData = useUserStore(state => state.saveUserData)
 
     /**
      * Validates the inputs for the login form.
@@ -55,23 +59,25 @@ const LoginScreen = ({ navigation }) => {
         }
 
         try {
-            const response = await axios.post('/auth/login', { email, password });
-            const { user, tokens } = await response.data;
-
-            // Store the token in AsyncStorage
-            await SecureStore.setItemAsync('authToken', tokens.accessToken);
-            await SecureStore.setItemAsync('refreshToken', tokens.refreshToken);
-            // store user data
-            const newUser = (({ token, ...rest }) => rest)(response.data)
-
-            await AsyncStorage.setItem('userData', JSON.stringify(newUser));
-
+            const response = await axios.post('/auth/login', { email, password })
+            const { user, tokens } = response.data
+      
+            // Store the token in SecureStore
+            await SecureStore.setItemAsync('authToken', tokens.accessToken)
+            await SecureStore.setItemAsync('refreshToken', tokens.refreshToken)
+      
+            // Update the store
+            setUser(user)
+            setContacts(user.contacts)
+            setPlaces(user.places)
+            await saveUserData()
+      
             // Navigate to Home screen
             navigation.reset({
-                index: 0,
-                routes: [{ name: 'Home' }],
-            });
-        } catch (error) {
+              index: 0,
+              routes: [{ name: 'Home' }],
+            })
+          } catch (error) {
             let errorMessage = 'Login failed. Please try again.';
             if (error.response) {
                 errorMessage = error.response.data.message || error.response.data.error || errorMessage;

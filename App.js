@@ -3,6 +3,7 @@ import AppNavigator from './src/navigator/AppNavigator';
 import { LoadingProvider, useLoading } from './src/utils/loadingContext';
 import { setupAxiosInterceptors } from './src/utils/axiosConfig';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
+import useUserStore from './src/stores/userStore';
 import * as FileSystem from 'expo-file-system';
 
 const App = () => {
@@ -12,6 +13,7 @@ const App = () => {
 
   useEffect(() => {
     setupAxiosInterceptors(setIsLoading);
+    useUserStore.getState().loadUserData()
 
     const createShelterDirectory = async () => {
       try {
