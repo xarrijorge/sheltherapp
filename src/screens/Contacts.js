@@ -6,6 +6,7 @@ import ContactSelector from '../components/ContactSelector';
 
 const ContactsScreen = () => {
   const contacts = useUserStore(state => state.contacts)
+  const removeContact = useUserStore(state => state.removeContact)
     
     useEffect(() => {
         useUserStore.getState().loadUserData()
