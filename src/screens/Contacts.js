@@ -2,37 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { Text, View, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ContactCard from '../components/ContactCard';
+import useUserStore from '../stores/userStore';
 
 const ContactsScreen = () => {
-    const [contacts, setContacts] = useState([]);
+    const contacts = useUserStore(state => state.contacts)
+    const removeContact = useUserStore(state => state.removeContact)
+    const saveUserData = useUserStore(state => state.saveUserData)
 
-
-   
-
-    const getContacts = async () => {
-        setIsLoading(true);
-        try {
-            const userData = await AsyncStorage.getItem('userData');
-            if (userData) {
-                const parsedUserData = JSON.parse(userData);
-                setContacts(parsedUserData.contacts || []);
-                console.log('Contacts fetched from AsyncStorage:', parsedUserData.contacts);
-                console.log('contacts', contacts);
-            }
-        } catch (error) {
-            console.error('Failed to fetch contacts from AsyncStorage:', error);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-      useEffect(() => {
-         getContacts();
-      }, []);
-    
-      useEffect(() => {
-        console.log('Contacts state updated:', contacts);
-      }, [contacts]);
+    useEffect(() => {
+        useUserStore.getState().loadUserData()
+      }, []) 
 
     useEffect(() => {
         console.log('contacts', contacts);
@@ -45,18 +24,7 @@ const ContactsScreen = () => {
             [
                 { text: 'Cancel', style: 'cancel' },
                 { text: 'OK', onPress: async () => {
-                    const updatedContacts = contacts.filter(contact => contact.id !== id);
-                    setContacts(updatedContacts);
-                    try {
-                        const userData = await AsyncStorage.getItem('userData');
-                        if (userData) {
-                            const parsedUserData = JSON.parse(userData);
-                            parsedUserData.contacts = updatedContacts;
-                            await AsyncStorage.setItem('userData', JSON.stringify(parsedUserData));
-                        }
-                    } catch (error) {
-                        console.error('Failed to update contacts in AsyncStorage:', error);
-                    }
+                   removeContact(id) 
                 }},
             ]
         );
@@ -77,7 +45,7 @@ const ContactsScreen = () => {
             <FlatList
                 data={contacts}
                 renderItem={renderContactCard}
-                keyExtractor={(item) => item.id.toString()}
+                keyExtractor={(item, index) => index}
                 contentContainerStyle={styles.listContainer}
             />
             <TouchableOpacity style={styles.addButton} onPress={addContact}>
