@@ -1,8 +1,8 @@
-import {create} from 'zustand'
+import { create } from 'zustand'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from '../utils/axiosConfig'
 
-const useUserStore = create((set) => ({
+const useUserStore = create((set, get) => ({
   user: null,
   contacts: [],
   places: [],
@@ -13,31 +13,50 @@ const useUserStore = create((set) => ({
   
   setPlaces: (places) => set({ places }),
 
-  addContact: (contact) => set((state) => ({ 
-    contacts: [...state.contacts, contact] 
-  })),
+  addContact: async (contact) => {
+    try {
+      // Make API call to add contact
+      const response = await axios.post('/contacts', contact);
+      const newContact = response.data; // Assuming the API returns the newly created contact
+
+      set((state) => ({ 
+        contacts: [...state.contacts, newContact] 
+      }));
+
+      // Save updated data to AsyncStorage
+      get().saveUserData();
+
+      return newContact;
+    } catch (error) {
+      console.error('Failed to add contact:', error);
+      throw error;
+    }
+  },
 
   addPlace: (place) => set((state) => ({
     places: [...state.places, place]
   })),
   
-  removeContact: (id) => set((state) => {
-    contacts: state.contacts.filter(contact => contact.id !== id)
-    // make api call
-    axios.delete(`/contacts/${id}`)
-  }),
+  removeContact: async (id) => {
+    try {
+      // Make API call to remove contact
+      await axios.delete(`/contacts/${id}`);
 
-  remotePlace: (id) => set((state) => ({
+      set((state) => ({
+        contacts: state.contacts.filter(contact => contact.id !== id)
+      }));
+
+      // Save updated data to AsyncStorage
+      get().saveUserData();
+    } catch (error) {
+      console.error('Failed to remove contact:', error);
+      throw error;
+    }
+  },
+
+  removePlace: (id) => set((state) => ({
     places: state.places.filter(place => place.id !== id)
   })),
-//   updateContact: (updatedContact) => set((state) => ({
-//     contacts: state.contacts.map(contact => 
-//       contact.id === updatedContact.id ? updatedContact : contact
-//     )
-//   })),
-
-  
-
 
   // Load user data from AsyncStorage
   loadUserData: async () => {
@@ -58,7 +77,7 @@ const useUserStore = create((set) => ({
   // Save user data to AsyncStorage
   saveUserData: async () => {
     try {
-      const { user, contacts } = useUserStore.getState()
+      const { user, contacts } = get()
       const userData = { ...user, contacts }
       await AsyncStorage.setItem('userData', JSON.stringify(userData))
     } catch (error) {

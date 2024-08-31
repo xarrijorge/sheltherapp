@@ -34,7 +34,6 @@ const ContactSelector = () => {
           setContacts(newContacts);
         },
         (contact) => {
-          console.log('Selected contact:', contact);
           if (contact?.phoneNumbers?.length === 1) {
             const newContact = {
               id: contact.id,
@@ -57,8 +56,6 @@ const ContactSelector = () => {
       console.error('Error handling contact addition:', error);
     }
   }, [contacts, addContact, setContacts]);
-
-  console.log('Current contacts:', contacts);
 
   return (
     <View>
