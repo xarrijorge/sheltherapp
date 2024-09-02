@@ -59,7 +59,8 @@ const LoginScreen = ({ navigation }) => {
         }
 
         try {
-            const response = await axios.post('/auth/login', { email, password })
+            const cleanEmail = email.trim().toLowerCase();
+            const response = await axios.post('/auth/login', { email: cleanEmail, password })
             const { user, tokens } = response.data
       
             // Store the token in SecureStore
