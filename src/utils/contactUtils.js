@@ -22,7 +22,6 @@ export const selectAndAddContact = async (setSelectedContact, setSelectedPhoneNu
         const result = await Contacts.presentContactPickerAsync({
             fields: [Contacts.Fields.Name, Contacts.Fields.PhoneNumbers, Contacts.Fields.Emails],
         });
-        
         if (result && result.phoneNumbers) {
                 setSelectedContact(result);
                 setSelectedPhoneNumber(result.phoneNumbers[0].number); // Default selection
@@ -41,10 +40,3 @@ export const selectAndAddContact = async (setSelectedContact, setSelectedPhoneNu
  * @param {Array} contacts - The current list of selected contacts.
  * @param {Function} setContacts - Function to update the contacts state.
  */
-export const addContactToList = (contact, phoneNumber, contacts, setContacts) => {
-    setContacts([...contacts, {
-        id: contact.id,
-        name: contact.name,
-        phone: phoneNumber,
-    }]);
-};
