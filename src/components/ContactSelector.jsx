@@ -10,7 +10,7 @@ const ContactSelector = () => {
   const [selectedPhoneNumber, setSelectedPhoneNumber] = useState('');
   
   // Use Zustand store
-  const { contacts, addContact, setContacts } = useUserStore();
+  const { addContact} = useUserStore();
 
   const handlePhoneNumberSelection = useCallback(() => {
     if (selectedContact && selectedPhoneNumber) {
@@ -26,36 +26,17 @@ const ContactSelector = () => {
     }
   }, [selectedContact, selectedPhoneNumber, addContact]);
 
-  const handleAddContact = useCallback(async () => {
+  const handleAddContact = (async () => {
     try {
       await selectAndAddContact(
-        contacts,
-        (newContacts) => {
-          setContacts(newContacts);
-        },
-        (contact) => {
-          if (contact?.phoneNumbers?.length === 1) {
-            const newContact = {
-              id: contact.id,
-              name: contact.name,
-              phone: contact.phoneNumbers[0].number,
-            };
-            addContact(newContact);
-          } else if (contact?.phoneNumbers?.length > 1) {
-            setSelectedContact(contact);
-            setSelectedPhoneNumber(contact.phoneNumbers[0]?.number || '');
-            setContactModalVisible(true);
-          } else {
-            Alert.alert('Error', 'No phone numbers available for this contact.');
-          }
-        },
-        setSelectedPhoneNumber,
-        setContactModalVisible
-      );
+          setSelectedContact,
+          setSelectedPhoneNumber,
+          setContactModalVisible
+      )
     } catch (error) {
       console.error('Error handling contact addition:', error);
     }
-  }, [contacts, addContact, setContacts]);
+  });
 
   return (
     <View>

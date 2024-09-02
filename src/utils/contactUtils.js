@@ -11,7 +11,7 @@ import { Alert } from 'react-native';
  * @param {Function} setSelectedPhoneNumber - Function to set the selected phone number from the modal.
  * @param {Function} setModalVisible - Function to control the visibility of the modal.
  */
-export const selectAndAddContact = async (contacts, setContacts, setSelectedContact, setSelectedPhoneNumber, setModalVisible) => {
+export const selectAndAddContact = async (setSelectedContact, setSelectedPhoneNumber, setModalVisible) => {
     try {
         const { status } = await Contacts.requestPermissionsAsync();
         if (status !== 'granted') {
@@ -22,16 +22,12 @@ export const selectAndAddContact = async (contacts, setContacts, setSelectedCont
         const result = await Contacts.presentContactPickerAsync({
             fields: [Contacts.Fields.Name, Contacts.Fields.PhoneNumbers, Contacts.Fields.Emails],
         });
-
+        
         if (result && result.phoneNumbers) {
-            if (result.phoneNumbers.length > 1) {
                 setSelectedContact(result);
                 setSelectedPhoneNumber(result.phoneNumbers[0].number); // Default selection
                 setModalVisible(true); // Show modal if multiple phone numbers
-            } else {
-                addContactToList(result, result.phoneNumbers[0].number, contacts, setContacts);
-            }
-        }
+            } 
     } catch (error) {
         console.error('Error selecting contact:', error);
     }
