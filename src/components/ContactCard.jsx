@@ -31,7 +31,7 @@ const ContactCard = ({ contact, onRemove }) => {
           <Text style={styles.name}>{name}</Text>
           <Text style={styles.phone}>{phone}</Text>
         </View>
-        <IconButton icon='delete' size={24} onPress={onRemove} />
+        <IconButton icon='delete' iconColor='maroon'  size={24} onPress={onRemove} />
       </View>
     </Card>
   )
