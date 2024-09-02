@@ -15,15 +15,13 @@ const useUserStore = create((set, get) => ({
 
   addContact: async (contact) => {
     try {
-      // Make API call to add contact
-      const response = await axios.post('/contacts', contact);
-      const newContact = response.data; // Assuming the API returns the newly created contact
+      const response = await axios.patch('/user/addcontact', contact);
+      const newContact = response.data.contact;
 
       set((state) => ({ 
         contacts: [...state.contacts, newContact] 
       }));
 
-      // Save updated data to AsyncStorage
       get().saveUserData();
 
       return newContact;
@@ -39,15 +37,15 @@ const useUserStore = create((set, get) => ({
   
   removeContact: async (id) => {
     try {
-      // Make API call to remove contact
-      await axios.delete(`/contacts/${id}`);
+      await axios.delete(`/user/remove/${id}`);
 
-      set((state) => ({
-        contacts: state.contacts.filter(contact => contact.id !== id)
-      }));
+      set((state) => {
+        const updatedContacts = state.contacts.filter(contact => contact._id !== id);
+        return { contacts: updatedContacts };
+      });
 
-      // Save updated data to AsyncStorage
       get().saveUserData();
+
     } catch (error) {
       console.error('Failed to remove contact:', error);
       throw error;
@@ -58,7 +56,6 @@ const useUserStore = create((set, get) => ({
     places: state.places.filter(place => place.id !== id)
   })),
 
-  // Load user data from AsyncStorage
   loadUserData: async () => {
     try {
       const userData = await AsyncStorage.getItem('userData')
@@ -74,7 +71,6 @@ const useUserStore = create((set, get) => ({
     }
   },
 
-  // Save user data to AsyncStorage
   saveUserData: async () => {
     try {
       const { user, contacts } = get()
@@ -85,7 +81,6 @@ const useUserStore = create((set, get) => ({
     }
   },
 
-  // Clear user data (for logout)
   clearUserData: async () => {
     try {
       await AsyncStorage.removeItem('userData')
