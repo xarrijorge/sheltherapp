@@ -14,6 +14,7 @@ const LoginScreen = ({ navigation }) => {
     const setContacts = useUserStore(state => state.setContacts)
     const setPlaces = useUserStore(state => state.setPlaces)
     const saveUserData = useUserStore(state => state.saveUserData)
+    const [showPassword, setShowPassword] = useState(false);
 
     /**
      * Validates the inputs for the login form.
@@ -105,12 +106,18 @@ const LoginScreen = ({ navigation }) => {
             </HelperText>
             <TextInput
                 label="Password"
-                secureTextEntry
+                secureTextEntry={!showPassword}
                 value={password}
                 onChangeText={setPassword}
                 style={styles.input}
                 error={!!passwordError}
-            />
+                right={
+                    <TextInput.Icon
+                        icon={showPassword ? "eye-off" : "eye"}
+                        onPress={() => setShowPassword(!showPassword)}
+                    />
+                }
+            /> 
             <HelperText type="error" visible={!!passwordError}>
                 {passwordError}
             </HelperText>
