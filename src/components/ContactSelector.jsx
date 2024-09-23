@@ -18,7 +18,7 @@ const ContactSelector = () => {
         id: selectedContact.id,
         name: selectedContact.name,
         phone: selectedPhoneNumber,
-        email: selectedContact.emails[0].email ?? '',
+        // email: selectedContact.emails[0].email || '',
       };
       addContact(newContact);
       setContactModalVisible(false);
