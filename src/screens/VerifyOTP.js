@@ -33,7 +33,6 @@ const VerifyOtpScreen = ({ route, navigation }) => {
                 value={otp}
                 onChangeText={setOtp}
                 style={styles.input}
-                keyboardType="numeric"
                 minLength={6}
                 maxLength={6}
             />
