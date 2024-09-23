@@ -31,9 +31,24 @@ const useUserStore = create((set, get) => ({
     }
   },
 
-  addPlace: (place) => set((state) => ({
-    places: [...state.places, place]
-  })),
+  addPlace: async (place) => {
+    try {
+      const response = await axios.patch('/user/addplace', place);
+      const newPlace = response.data.place;
+
+      set((state) => ({
+        places: [...state.places, newPlace]
+      }));
+
+      get().saveUserData();
+
+      return newPlace;
+
+    } catch (error){
+      console.error('Failed to add place:', error);
+      throw error;
+    }
+  },
   
   removeContact: async (id) => {
     try {
