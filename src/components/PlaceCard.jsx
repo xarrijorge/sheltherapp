@@ -3,7 +3,9 @@ import { View, StyleSheet } from 'react-native';
 import { Avatar, Text, IconButton, Card } from 'react-native-paper';
 
 const PlaceCard = ({ place, onRemove }) => {
-    const { name, address } = place;
+    const { name: data } = place;
+
+    const [name, address] = data.split(' | ');
 
     return (
         <Card style={styles.card}>
@@ -13,11 +15,7 @@ const PlaceCard = ({ place, onRemove }) => {
                     <Text style={styles.name}>{name}</Text>
                     <Text style={styles.address}>{address}</Text>
                 </View>
-                <IconButton
-                    icon="delete"
-                    size={24}
-                    onPress={onRemove}
-                />
+                <IconButton icon="delete" iconColor="#A90704" size={24} onPress={onRemove} />
             </View>
         </Card>
     );
@@ -26,7 +24,8 @@ const PlaceCard = ({ place, onRemove }) => {
 const styles = StyleSheet.create({
     card: {
         marginVertical: 5,
-        elevation: 3, // Adds a subtle shadow
+        elevation: 3,
+        borderRadius: 8, // Optional: Adds rounded corners
     },
     container: {
         flexDirection: 'row',
@@ -34,11 +33,12 @@ const styles = StyleSheet.create({
         padding: 10,
     },
     avatar: {
-        backgroundColor: '#6200ee', // Primary color for the icon background
+        backgroundColor: '#6200ee', // Fallback color
     },
     detailsContainer: {
         flex: 1,
         marginLeft: 10,
+        justifyContent: 'center', // Centers text vertically
     },
     name: {
         fontSize: 16,
@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
     },
     address: {
         fontSize: 14,
-        color: '#555', // Slightly muted color for the address
+        color: '#555',
     },
 });
 
