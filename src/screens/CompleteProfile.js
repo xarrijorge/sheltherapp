@@ -1,14 +1,13 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, Alert, ScrollView, Modal } from 'react-native';
-import { Text, TextInput, Button, IconButton, Avatar, RadioButton, HelperText, Icon } from 'react-native-paper';
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet, Alert, ScrollView, Modal, } from 'react-native';
+import { TextInput, Button, Text, IconButton, Avatar, RadioButton, HelperText } from 'react-native-paper';
 import * as ImagePicker from 'expo-image-picker';
-import * as FileSystem from 'expo-file-system';
+import * as Contacts from 'expo-contacts';
 import axios from '../utils/axiosConfig';
 import ContactCard from '../components/ContactCard';
-import PlaceCard from '../components/PlaceCard';
 import * as AsyncStorage from  '@react-native-async-storage/async-storage';
 import * as SecureStore from 'expo-secure-store';
-import ContactSelector from '../components/ContactSelector';
+
 
 const CompleteProfileScreen = ({ route, navigation }) => {
     const [name, setName] = useState('');
@@ -18,7 +17,7 @@ const CompleteProfileScreen = ({ route, navigation }) => {
     const [address, setAddress] = useState('');
     const [contacts, setContacts] = useState([]);
     const [places, setPlaces] = useState([]);
-    const [contactModalVisible, setContactModalVisible] = useState(false); // Separate modal state for contacts
+    const [modalVisible, setModalVisible] = useState(false);
     const [selectedContact, setSelectedContact] = useState(null);
     const [selectedPhoneNumber, setSelectedPhoneNumber] = useState('');
 
@@ -61,7 +60,7 @@ const CompleteProfileScreen = ({ route, navigation }) => {
             throw error; // If there's an error, log it and rethrow the error
         }
     }; 
-    
+
     const pickImage = async () => {
         try {
             let result = await ImagePicker.launchImageLibraryAsync({
@@ -122,7 +121,7 @@ const CompleteProfileScreen = ({ route, navigation }) => {
             Alert.alert('Error', 'Password cannot be the same as the email');
             throw new Error('Password cannot be the same as the email');
         }
-    };
+    }; 
 
     const handleCompleteProfile = async () => {
         if (!name || !password || !photo || !address || contacts.length < 1) {
@@ -168,7 +167,7 @@ const CompleteProfileScreen = ({ route, navigation }) => {
             }
             Alert.alert('Error', error.response?.data?.error || 'Failed to complete profile');
         }
-    }; 
+    };  
 
     const removeContact = (id) => {
         setContacts(contacts.filter(contact => contact.id !== id));
@@ -178,14 +177,44 @@ const CompleteProfileScreen = ({ route, navigation }) => {
         setPhoto(null);
     };
 
-    const addContact = (newContact) => {
-        setContacts(prevContacts => [...prevContacts, newContact]);
+    const handleContactSelection = async () => {
+        const { status } = await Contacts.requestPermissionsAsync();
+        if (status === 'granted') {
+            const result = await Contacts.presentContactPickerAsync({
+                fields: [Contacts.Fields.Name, Contacts.Fields.PhoneNumbers, Contacts.Fields.Emails],
+            });
+
+            if (result && result.phoneNumbers) {
+                if (result.phoneNumbers.length > 1) {
+                    setSelectedContact(result);
+                    setSelectedPhoneNumber(result.phoneNumbers[0].number); // Default selection
+                    setModalVisible(true); // Show modal if multiple phone numbers
+                } else {
+                    addContact(result, result.phoneNumbers[0].number);
+                }
+            }
+        }
     };
 
-   
+    const addContact = (contact, phoneNumber) => {
+        setContacts([...contacts, {
+            id: contact.id,
+            name: contact.name,
+            phone: phoneNumber,
+        }]);
+        setModalVisible(false);
+    };
+
+    const handlePhoneNumberSelection = () => {
+        if (selectedPhoneNumber) {
+            addContact(selectedContact, selectedPhoneNumber);
+        }
+    };
+
     return (
         <ScrollView contentContainerStyle={styles.container}>
             <View style={{ marginBottom: 20 }}>
+                {/* Image Section */}
                 {!photo && (
                     <Button mode="contained" onPress={pickImage} style={styles.button}>
                         {photo ? 'Change Image' : 'Pick an Image'}
@@ -218,40 +247,40 @@ const CompleteProfileScreen = ({ route, navigation }) => {
                 secureTextEntry
                 style={styles.input}
             />
-            {(confirmPassword !== "" && password !== confirmPassword) && <HelperText type='error'>Password does not match.</HelperText>}
+          {(confirmPassword !== "" && password !== confirmPassword) && <HelperText type='error'>Password does not match.</HelperText>}
             <TextInput
                 label="Home Address"
                 value={address}
                 onChangeText={setAddress}
                 style={styles.input}
-            />
-            
-            {contacts.length < 5 && (
-               <ContactSelector onContactSelected={addContact} /> 
-            )}
+            /> 
 
+            {contacts.length < 5 && <Button mode="contained" onPress={handleContactSelection} style={styles.button}>
+                Add Contacts
+            </Button>}
+
+            {/* Contacts List */}
             {contacts.length > 0 && (
                 <View style={styles.contactsContainer}>
                     <Text style={styles.contactsTitle}>Selected Contacts:</Text>
-                    {contacts.map((contact, index) => (
-                        <ContactCard key={index} contact={contact} onRemove={() => removeContact(contact.id)} />
-                    ))}
+                    {
+                        contacts.map((contact, index) =>
+                            <ContactCard key={index} contact={contact} onRemove={() => removeContact(contact.id)} />
+                        )
+                    }
                 </View>
             )}
-
-
-           
-
-            <Button disabled={!completion} mode="contained" onPress={handleCompleteProfile} style={styles.button}>
+            <Button mode="contained" onPress={handleCompleteProfile} style={styles.button}>
                 Complete Profile
             </Button>
 
+
             {/* Modal for selecting phone number */}
             <Modal
-                visible={contactModalVisible} // Use the contact modal state
+                visible={modalVisible}
                 animationType="slide"
                 transparent={true}
-                onRequestClose={() => setContactModalVisible(false)}
+                onRequestClose={() => setModalVisible(false)}
             >
                 <View style={styles.modalContainer}>
                     <View style={styles.modalContent}>
@@ -266,6 +295,7 @@ const CompleteProfileScreen = ({ route, navigation }) => {
                                     <Text>{phone.number}</Text>
                                 </View>
                             ))}
+
                         </RadioButton.Group>
                         <Button mode="contained" onPress={handlePhoneNumberSelection} style={styles.button}>
                             Select
@@ -281,7 +311,7 @@ const styles = StyleSheet.create({
     container: {
         flexGrow: 1,
         padding: 20,
-        justifyContent: "center",
+        justifyContent: 'center',
     },
     input: {
         marginBottom: 10,
@@ -290,26 +320,21 @@ const styles = StyleSheet.create({
         marginTop: 10,
     },
     selectedItem: {
-        flexDirection: "row",
-        alignItems: "center",
+        flexDirection: 'row',
+        alignItems: 'center',
         marginTop: 10,
-        justifyContent: "space-between",
+        justifyContent: 'space-between',
     },
     contactsContainer: {
         marginTop: 20,
     },
     contactsTitle: {
         fontSize: 16,
-        fontWeight: "bold",
-        marginBottom: 10,
-    },
-    placesContainer: {
-        marginTop: 20,
-    },
-    placesTitle: {
-        fontSize: 16,
         fontWeight: 'bold',
         marginBottom: 10,
+    },
+    contactText: {
+        flex: 1,
     },
     modalContainer: {
         flex: 1,
@@ -318,9 +343,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
     modalContent: {
-        width: '90%',
-        // maxHeight: '80%',
-        minHeight: 100,
+        width: '80%',
         backgroundColor: 'white',
         padding: 20,
         borderRadius: 10,
@@ -332,8 +355,8 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     radioItem: {
-        flexDirection: "row",
-        alignItems: "center",
+        flexDirection: 'row',
+        alignItems: 'center',
         marginBottom: 10,
     },
 });
