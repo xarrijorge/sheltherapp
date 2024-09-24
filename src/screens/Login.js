@@ -1,6 +1,6 @@
 // src/screens/LoginScreen.js
 import React, { useState } from 'react';
-import { View, StyleSheet, Alert } from 'react-native';
+import { View, StyleSheet, Alert, Image } from 'react-native';
 import { TextInput, Button, Text, HelperText } from 'react-native-paper';
 import axios from '../utils/axiosConfig';
 import * as SecureStore from 'expo-secure-store';
@@ -91,6 +91,7 @@ const LoginScreen = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
+            <Image source={require('../../assets/sheltherTransparent.png')} style={{ width: 250, height: 150, alignSelf: 'center' }} />
             <Text style={styles.title}>Login</Text>
             <TextInput
                 label="Email"
@@ -124,10 +125,10 @@ const LoginScreen = ({ navigation }) => {
             <Button mode="contained" onPress={handleLogin} style={styles.button}>
                 Login
             </Button>
-            <Button mode="text" onPress={() => navigation.navigate('Register')} style={styles.button}>
+            <Button mode="text" onPress={() => navigation.navigate('Register')} style={styles.textButton}>
                 Don't have an account? Register
             </Button>
-            <Button mode="text" onPress={() => navigation.navigate('Home')} style={styles.button}>Home</Button>
+            {/* <Button mode="text" onPress={() => navigation.navigate('Home')} style={styles.textButton}>Home</Button> */}
         </View>
     );
 };
@@ -142,12 +143,15 @@ const styles = StyleSheet.create({
         fontSize: 24,
         marginBottom: 16,
         textAlign: 'center',
+        color: '#8C52FF'
     },
     input: {
         marginBottom: 8,
+        backgroundColor: 'transparent',
     },
     button: {
-        marginTop: 16,
+        marginY: 16,
+        backgroundColor: '#8C52FF'
     },
 });
 

@@ -1,6 +1,6 @@
 // src/screens/RegisterScreen.js
 import React, { useState } from 'react';
-import { View, StyleSheet, Alert } from 'react-native';
+import { View, StyleSheet, Alert, Image } from 'react-native';
 import { TextInput, Button, Text, HelperText } from 'react-native-paper';
 import axios from '../utils/axiosConfig';
 
@@ -68,6 +68,7 @@ const RegisterScreen = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
+            <Image source={require('../../assets/sheltherTransparent.png')} style={{ width: 200, height: 150, alignSelf: 'center' }} />
             <Text style={styles.title}>Register</Text>
             <TextInput
                 label="Email"
@@ -98,7 +99,7 @@ const RegisterScreen = ({ navigation }) => {
             <Button mode="contained" onPress={handleRegister} style={styles.button}>
                 Register
             </Button>
-            <Button mode="text" onPress={() => navigation.navigate('Login')} style={styles.button}>
+            <Button mode="text" onPress={() => navigation.navigate('Login')}>
                 Already have an account? Login
             </Button>
         </View>
@@ -115,13 +116,20 @@ const styles = StyleSheet.create({
         fontSize: 24,
         marginBottom: 16,
         textAlign: 'center',
+        color: '#8C52FF',
     },
     input: {
         marginBottom: 12,
+        backgroundColor: 'transparent',
     },
     button: {
-        marginTop: 12,
+        marginY: 12,
+        backgroundColor: '#8C52FF',
     },
+    textButton:{
+       margin: 12,
+       color: 'teal' 
+    }
 });
 
 export default RegisterScreen;

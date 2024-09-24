@@ -47,6 +47,7 @@ const ContactsScreen = () => {
         data={contacts}
         renderItem={renderContactCard}
         keyExtractor={(item) => item._id}
+        key={item => item._id}
         contentContainerStyle={styles.listContainer}
         extraData={contacts}
       />

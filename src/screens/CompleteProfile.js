@@ -5,8 +5,9 @@ import * as ImagePicker from 'expo-image-picker';
 import * as Contacts from 'expo-contacts';
 import axios from '../utils/axiosConfig';
 import ContactCard from '../components/ContactCard';
-import * as AsyncStorage from  '@react-native-async-storage/async-storage';
+import  AsyncStorage from  '@react-native-async-storage/async-storage';
 import * as SecureStore from 'expo-secure-store';
+import * as FileSystem from 'expo-file-system';
 
 
 const CompleteProfileScreen = ({ route, navigation }) => {
@@ -20,6 +21,7 @@ const CompleteProfileScreen = ({ route, navigation }) => {
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedContact, setSelectedContact] = useState(null);
     const [selectedPhoneNumber, setSelectedPhoneNumber] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
 
     const email = route.params.email;
 
@@ -70,16 +72,15 @@ const CompleteProfileScreen = ({ route, navigation }) => {
                 quality: 1,
             });
     
-            console.log('ImagePicker result:', result);
-    
             if (!result.canceled) {
                 if (result.assets && result.assets.length > 0) {
                     const uri = result.assets[0].uri;
-                    setPhoto(uri); // Update the state with the selected image URI
+                    console.log('photo', photo);
     
                     // Move the image to the shelter directory
                     const newUri = await moveImageToShelter(uri);
-                    console.log('Image moved to shelter directory:', newUri);
+                    setPhoto(newUri); // Update the state with the selected image URI
+                    console.log('Image selected:', photo);
                 } else {
                     console.log('No assets found in the result');
                 }
@@ -148,9 +149,11 @@ const CompleteProfileScreen = ({ route, navigation }) => {
             if (response.status === 200) {
                 Alert.alert('Success', 'Profile completed successfully');
                 await AsyncStorage.setItem('userData', JSON.stringify({ loggedIn: true, photo, name, email, address, contacts }));
+
+                console.log('Response:', response);
                 // Store the token in AsyncStorage
-                await SecureStore.setItemAsync('authToken', response.token.accessToken);
-                await SecureStore.setItemAsync('refreshToken', response.token.refreshToken);
+                await SecureStore.setItemAsync('authToken', response.data.token.accessToken);
+                await SecureStore.setItemAsync('refreshToken', response.data.token.refreshToken);
 
                 navigation.reset({
                     index: 0,
@@ -237,8 +240,14 @@ const CompleteProfileScreen = ({ route, navigation }) => {
                 label="Password"
                 value={password}
                 onChangeText={setPassword}
-                secureTextEntry
+                secureTextEntry={!showPassword}
                 style={styles.input}
+                right={
+                    <TextInput.Icon
+                        icon={showPassword ? "eye-off" : "eye"}
+                        onPress={() => setShowPassword(!showPassword)}
+                    />
+                }
             />
             <TextInput
                 label="Confirm Password"
@@ -246,6 +255,12 @@ const CompleteProfileScreen = ({ route, navigation }) => {
                 onChangeText={setConfirmPassword}
                 secureTextEntry
                 style={styles.input}
+                right={
+                    <TextInput.Icon
+                        icon={showPassword ? "eye-off" : "eye"}
+                        onPress={() => setShowPassword(!showPassword)}
+                    />
+                }
             />
           {(confirmPassword !== "" && password !== confirmPassword) && <HelperText type='error'>Password does not match.</HelperText>}
             <TextInput

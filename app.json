@@ -7,9 +7,8 @@
     "icon": "./assets/ico.png",
     "userInterfaceStyle": "dark",
     "splash": {
-      "image": "./assets/square.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "image": "./assets/sheltherlogoBG.jpeg",
+      "backgroundColor": "#171232"
     },
     "ios": {
       "supportsTablet": true,
@@ -20,7 +19,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/square.png",
+        "foregroundImage": "./assets/sheltherlogoBG.jpeg",
         "backgroundColor": "#ffffff"
       },
       "package": "com.shelther.app",
@@ -33,7 +32,7 @@
       ]
     },
     "web": {
-      "favicon": "./assets/ico.png"
+      "favicon": "./assets/ico.ico"
     },
     "plugins": [
       "expo-font",
