@@ -23,6 +23,7 @@ const ListView = ({ places }) => {
         data={places}
         renderItem={renderPlaceCard}
         keyExtractor={item => item._id} // Use _id if it's unique
+        key={item => item._id}
         contentContainerStyle={styles.listContainer}
         extraData={places}
       />
