@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
-import { View, StyleSheet, Alert, ActivityIndicator } from 'react-native';
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import { View, StyleSheet, Alert, ActivityIndicator, Platform } from 'react-native';
+import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 
 const INITIAL_REGION = {
@@ -49,7 +49,6 @@ const MapComponent = React.memo(() => {
   const mapView = useMemo(() => (
     <MapView
       style={styles.map}
-      provider={PROVIDER_GOOGLE}
       initialRegion={INITIAL_REGION}
       region={region}
       showsUserLocation={true}

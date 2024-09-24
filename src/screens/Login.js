@@ -127,6 +127,7 @@ const LoginScreen = ({ navigation }) => {
             <Button mode="text" onPress={() => navigation.navigate('Register')} style={styles.button}>
                 Don't have an account? Register
             </Button>
+            <Button mode="text" onPress={() => navigation.navigate('Home')} style={styles.button}>Home</Button>
         </View>
     );
 };

@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import React, { useEffect } from 'react';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { View, StyleSheet } from 'react-native';
-import MapView from '../components/MapView'; // Ensure this is the correct import
+import { Ionicons } from '@expo/vector-icons';
+import MapView from '../components/MapView';
 import ListView from '../components/ListView';
 import useUserStore from '../stores/userStore';
 
-const Tab = createMaterialTopTabNavigator();
+const Tab = createBottomTabNavigator();
 
 const PlacesScreen = () => {
   const places = useUserStore(state => state.places);
@@ -35,9 +36,33 @@ const PlacesScreen = () => {
   };
 
   return (
-    <Tab.Navigator>
-      <Tab.Screen name="PlacesList" component={PlacesList} options={{ title: 'List' }} />
-      <Tab.Screen name="PlacesMap" component={PlacesMap} options={{ title: 'Map' }} />
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName;
+
+          if (route.name === 'PlacesList') {
+            iconName = focused ? 'list' : 'list-outline';
+          } else if (route.name === 'PlacesMap') {
+            iconName = focused ? 'map' : 'map-outline';
+          }
+
+          return <Ionicons name={iconName} size={size} color={color} />;
+        },
+        tabBarActiveTintColor: 'blue',
+        tabBarInactiveTintColor: 'gray',
+      })}
+    >
+      <Tab.Screen 
+        name="PlacesList" 
+        component={PlacesList} 
+        options={{ title: 'List' }} 
+      />
+      <Tab.Screen 
+        name="PlacesMap" 
+        component={PlacesMap} 
+        options={{ title: 'Map' }} 
+      />
     </Tab.Navigator>
   );
 };
