@@ -2,6 +2,8 @@ import { View, Text, StyleSheet, TouchableOpacity, Animated, Easing, Alert } fro
 import { Gyroscope } from 'expo-sensors';
 import React, { useState, useEffect, useRef } from 'react';
 import * as Location from 'expo-location';
+import SafeWordInput from '../components/SafeWordInput';
+
 
 export default function Home() {
     const [{ x, y, z }, setData] = useState({ x: 0, y: 0, z: 0 });
@@ -9,6 +11,8 @@ export default function Home() {
     const shakes = useRef([]);
     const lastShakeTime = useRef(0);
     const lastZ = useRef(0);
+    const [showSafeWordInput, setShowSafeWordInput] = useState(false);
+
 
     const [alertMode, setAlertMode] = useState('Standby'); // 'Standby' or 'Panic'
     const scaleAnim = useRef(new Animated.Value(1)).current;
@@ -212,6 +216,18 @@ export default function Home() {
                 <Text style={[styles.legendText, styles.currentModeText]}>Current Mode: {alertMode} Mode</Text>
                 <Text style={styles.instructions}>Long press the button to switch between modes.</Text>
             </View>
+            <View style={styles.container}>
+            {showSafeWordInput ? (
+                <SafeWordInput onSafeWordSaved={() => setShowSafeWordInput(false)} />
+            ) : (
+                <TouchableOpacity 
+                    style={styles.button} 
+                    onPress={() => setShowSafeWordInput(true)}
+                >
+                    <Text style={styles.buttonText}>Set Safe Word</Text>
+                </TouchableOpacity>
+            )}
+        </View>
         </View>
     );
 }
