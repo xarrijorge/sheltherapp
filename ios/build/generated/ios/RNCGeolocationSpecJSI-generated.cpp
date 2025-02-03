@@ -14,31 +14,31 @@ namespace facebook::react {
 static jsi::Value __hostFunction_NativeRNCGeolocationCxxSpecJSI_setConfiguration(jsi::Runtime &rt, TurboModule &turboModule, const jsi::Value* args, size_t count) {
   static_cast<NativeRNCGeolocationCxxSpecJSI *>(&turboModule)->setConfiguration(
     rt,
-    count <= 0 ? throw jsi::JSError(rt, "Expected argument in position 0 to be passed") : args[0].asObject(rt)
+    args[0].asObject(rt)
   );
   return jsi::Value::undefined();
 }
 static jsi::Value __hostFunction_NativeRNCGeolocationCxxSpecJSI_requestAuthorization(jsi::Runtime &rt, TurboModule &turboModule, const jsi::Value* args, size_t count) {
   static_cast<NativeRNCGeolocationCxxSpecJSI *>(&turboModule)->requestAuthorization(
     rt,
-    count <= 0 ? throw jsi::JSError(rt, "Expected argument in position 0 to be passed") : args[0].asObject(rt).asFunction(rt),
-    count <= 1 ? throw jsi::JSError(rt, "Expected argument in position 1 to be passed") : args[1].asObject(rt).asFunction(rt)
+    args[0].asObject(rt).asFunction(rt),
+    args[1].asObject(rt).asFunction(rt)
   );
   return jsi::Value::undefined();
 }
 static jsi::Value __hostFunction_NativeRNCGeolocationCxxSpecJSI_getCurrentPosition(jsi::Runtime &rt, TurboModule &turboModule, const jsi::Value* args, size_t count) {
   static_cast<NativeRNCGeolocationCxxSpecJSI *>(&turboModule)->getCurrentPosition(
     rt,
-    count <= 0 ? throw jsi::JSError(rt, "Expected argument in position 0 to be passed") : args[0].asObject(rt),
-    count <= 1 ? throw jsi::JSError(rt, "Expected argument in position 1 to be passed") : args[1].asObject(rt).asFunction(rt),
-    count <= 2 ? throw jsi::JSError(rt, "Expected argument in position 2 to be passed") : args[2].asObject(rt).asFunction(rt)
+    args[0].asObject(rt),
+    args[1].asObject(rt).asFunction(rt),
+    args[2].asObject(rt).asFunction(rt)
   );
   return jsi::Value::undefined();
 }
 static jsi::Value __hostFunction_NativeRNCGeolocationCxxSpecJSI_startObserving(jsi::Runtime &rt, TurboModule &turboModule, const jsi::Value* args, size_t count) {
   static_cast<NativeRNCGeolocationCxxSpecJSI *>(&turboModule)->startObserving(
     rt,
-    count <= 0 ? throw jsi::JSError(rt, "Expected argument in position 0 to be passed") : args[0].asObject(rt)
+    args[0].asObject(rt)
   );
   return jsi::Value::undefined();
 }
@@ -51,14 +51,14 @@ static jsi::Value __hostFunction_NativeRNCGeolocationCxxSpecJSI_stopObserving(js
 static jsi::Value __hostFunction_NativeRNCGeolocationCxxSpecJSI_addListener(jsi::Runtime &rt, TurboModule &turboModule, const jsi::Value* args, size_t count) {
   static_cast<NativeRNCGeolocationCxxSpecJSI *>(&turboModule)->addListener(
     rt,
-    count <= 0 ? throw jsi::JSError(rt, "Expected argument in position 0 to be passed") : args[0].asString(rt)
+    args[0].asString(rt)
   );
   return jsi::Value::undefined();
 }
 static jsi::Value __hostFunction_NativeRNCGeolocationCxxSpecJSI_removeListeners(jsi::Runtime &rt, TurboModule &turboModule, const jsi::Value* args, size_t count) {
   static_cast<NativeRNCGeolocationCxxSpecJSI *>(&turboModule)->removeListeners(
     rt,
-    count <= 0 ? throw jsi::JSError(rt, "Expected argument in position 0 to be passed") : args[0].asNumber()
+    args[0].asNumber()
   );
   return jsi::Value::undefined();
 }

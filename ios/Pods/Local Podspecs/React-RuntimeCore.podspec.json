@@ -1,16 +1,16 @@
 {
   "name": "React-RuntimeCore",
-  "version": "0.76.6",
+  "version": "0.74.5",
   "summary": "The React Native Runtime.",
   "homepage": "https://reactnative.dev/",
   "license": "MIT",
   "authors": "Meta Platforms, Inc. and its affiliates",
   "platforms": {
-    "ios": "15.1"
+    "ios": "13.4"
   },
   "source": {
     "git": "https://github.com/facebook/react-native.git",
-    "tag": "v0.76.6"
+    "tag": "v0.74.5"
   },
   "source_files": [
     "*.{cpp,h}",
@@ -38,7 +38,6 @@
     "glog": [],
     "React-jsi": [],
     "React-jserrorhandler": [],
-    "React-performancetimeline": [],
     "React-runtimescheduler": [],
     "React-utils": [],
     "React-featureflags": [],

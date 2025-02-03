@@ -34,6 +34,11 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>EXLocation.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>EXManifests.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -84,11 +89,6 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>ExpoLocation.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
 		<key>ExpoModulesCore.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -110,11 +110,6 @@
 			<false/>
 		</dict>
 		<key>Pods-sheltherapp.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>RCT-Folly-RCT-Folly_privacy.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -169,7 +164,12 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>React-Core-React-Core_privacy.xcscheme</key>
+		<key>React-Codegen.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>React-Core-RCTI18nStrings.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -185,11 +185,6 @@
 			<false/>
 		</dict>
 		<key>React-Fabric.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>React-FabricComponents.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -289,11 +284,6 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>React-cxxreact-React-cxxreact_privacy.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
 		<key>React-cxxreact.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -304,22 +294,7 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>React-defaultsnativemodule.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>React-domnativemodule.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
 		<key>React-featureflags.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>React-featureflagsnativemodule.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -330,11 +305,6 @@
 			<false/>
 		</dict>
 		<key>React-hermes.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>React-idlecallbacksnativemodule.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -369,27 +339,12 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>React-microtasksnativemodule.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
 		<key>React-nativeconfig.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
 		</dict>
 		<key>React-perflogger.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>React-performancetimeline.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>React-rendererconsistency.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -414,22 +369,12 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>React-timing.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
 		<key>React-utils.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
 		</dict>
 		<key>React.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>ReactCodegen.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -445,11 +390,6 @@
 			<false/>
 		</dict>
 		<key>Yoga.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>boost-boost_privacy.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -494,11 +434,6 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>glog-glog_privacy.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
 		<key>glog.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -510,11 +445,6 @@
 			<false/>
 		</dict>
 		<key>react-native-geolocation.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>react-native-maps-ReactNativeMapsPrivacy.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>

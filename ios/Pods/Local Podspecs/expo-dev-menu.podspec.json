@@ -1,13 +1,13 @@
 {
   "name": "expo-dev-menu",
-  "version": "6.0.18",
+  "version": "5.0.23",
   "summary": "Expo/React Native module with the developer menu.",
   "description": "Expo/React Native module with the developer menu.",
   "license": "MIT",
   "authors": "650 Industries, Inc.",
   "homepage": "https://docs.expo.dev",
   "platforms": {
-    "ios": "15.1"
+    "ios": "13.4"
   },
   "swift_versions": "5.2",
   "source": {
@@ -38,7 +38,7 @@
     "HEADER_SEARCH_PATHS": "\"${PODS_ROOT}/Headers/Private/React-Core\" \"$(PODS_CONFIGURATION_BUILD_DIR)/ExpoModulesCore/Swift Compatibility Header\" \"$(PODS_CONFIGURATION_BUILD_DIR)/expo-dev-menu-interface/Swift Compatibility Header\" \"$(PODS_ROOT)/boost\" \"$(PODS_ROOT)/Headers/Private/Yoga\"",
     "OTHER_CPLUSPLUSFLAGS": "$(inherited) -DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1 -DFOLLY_CFG_NO_COROUTINES=1 -DFOLLY_HAVE_CLOCK_GETTIME=1 -Wno-comma -Wno-shorten-64-to-32"
   },
-  "compiler_flags": "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1 -DFOLLY_CFG_NO_COROUTINES=1 -Wno-comma -Wno-shorten-64-to-32 -DREACT_NATIVE_TARGET_VERSION=76 -DUSE_HERMES",
+  "compiler_flags": "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1 -DFOLLY_CFG_NO_COROUTINES=1 -Wno-comma -Wno-shorten-64-to-32 -DREACT_NATIVE_TARGET_VERSION=74 -DUSE_HERMES",
   "dependencies": {
     "React-Core": [],
     "RCT-Folly": [
@@ -46,7 +46,7 @@
     ],
     "glog": [],
     "React-RCTFabric": [],
-    "ReactCodegen": [],
+    "React-Codegen": [],
     "RCTRequired": [],
     "RCTTypeSafety": [],
     "ReactCommon/turbomodule/bridging": [],
@@ -87,7 +87,7 @@
         "ExpoModulesTestCore": []
       },
       "platforms": {
-        "ios": "15.1"
+        "ios": "13.4"
       }
     },
     {
@@ -100,7 +100,7 @@
         "React": []
       },
       "platforms": {
-        "ios": "15.1"
+        "ios": "13.4"
       }
     }
   ],
@@ -141,7 +141,7 @@
     {
       "name": "ReactNativeCompatibles",
       "source_files": "ios/ReactNativeCompatibles/ReactNative/**/*",
-      "compiler_flags": "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1 -DFOLLY_CFG_NO_COROUTINES=1 -Wno-comma -Wno-shorten-64-to-32 -DREACT_NATIVE_TARGET_VERSION=76 -DUSE_HERMES",
+      "compiler_flags": "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1 -DFOLLY_CFG_NO_COROUTINES=1 -Wno-comma -Wno-shorten-64-to-32 -DREACT_NATIVE_TARGET_VERSION=74 -DUSE_HERMES",
       "dependencies": {
         "React-Core": []
       }

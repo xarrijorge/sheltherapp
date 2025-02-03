@@ -14,11 +14,6 @@
 #ifndef __cplusplus
 #error This file must be compiled as Obj-C++. If you are importing it, you must change your file extension to .mm.
 #endif
-
-// Avoid multiple includes of rngesturehandler_codegen symbols
-#ifndef rngesturehandler_codegen_H
-#define rngesturehandler_codegen_H
-
 #import <Foundation/Foundation.h>
 #import <RCTRequired/RCTRequired.h>
 #import <RCTTypeSafety/RCTConvertHelpers.h>
@@ -49,16 +44,6 @@
 - (void)flushOperations;
 
 @end
-
-@interface NativeRNGestureHandlerModuleSpecBase : NSObject {
-@protected
-facebook::react::EventEmitterCallback _eventEmitterCallback;
-}
-- (void)setEventEmitterCallback:(EventEmitterCallbackWrapper *)eventEmitterCallbackWrapper;
-
-
-@end
-
 namespace facebook::react {
   /**
    * ObjC++ class for module 'NativeRNGestureHandlerModule'
@@ -69,4 +54,3 @@ namespace facebook::react {
   };
 } // namespace facebook::react
 
-#endif // rngesturehandler_codegen_H
