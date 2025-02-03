@@ -1,0 +1,19 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.shelther.app-mergeDebugResources-67:/values-h720dp-v13/values-h720dp-v13.xml",
+            "map": [
+                {
+                    "source": "/Users/swordsman/.gradle/caches/8.10.2/transforms/1ffd477de46ec477edb993919b2f1d94/transformed/appcompat-1.6.1/res/values-h720dp-v13/values-h720dp-v13.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "66",
+                        "endOffsets": "117"
+                    }
+                }
+            ]
+        }
+    ]
+}
