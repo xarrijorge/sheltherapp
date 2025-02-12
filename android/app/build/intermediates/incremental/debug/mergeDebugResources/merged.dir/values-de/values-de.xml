@@ -43,8 +43,6 @@
     <string name="character_counter_content_description">Eingegebene Zeichen: %1$d von %2$d</string>
     <string name="character_counter_overflowed_content_description">Zeichenbeschränkung überschritten: %1$d/%2$d</string>
     <string name="clear_text_end_icon_content_description">Text löschen</string>
-    <string msgid="406453423630273620" name="close_drawer">"Navigationsmenü schließen"</string>
-    <string msgid="7573152094250666567" name="close_sheet">"Tabelle schließen"</string>
     <string gender="unknown" name="combobox_description">Kombinationsfeld</string>
     <string msgid="2523291102206661146" name="common_google_play_services_enable_button">Aktivieren</string>
     <string msgid="227660514972886228" name="common_google_play_services_enable_text">%1$s funktioniert erst nach der Aktivierung der Google Play-Dienste.</string>
@@ -69,10 +67,7 @@
     <string name="crop_image_activity_no_permissions">Vorgang wird abgebrochen, benötigte Berechtigungen wurden nicht erteilt.</string>
     <string name="crop_image_activity_title"/>
     <string name="crop_image_menu_crop">zuschneiden</string>
-    <string msgid="8038256446254964252" name="default_error_message">"Ungültige Eingabe"</string>
     <string msgid="4776854077120974966" name="default_error_msg">"Unbekannter Fehler"</string>
-    <string msgid="6312721426453364202" name="default_popup_window_title">"Pop-up-Fenster"</string>
-    <string msgid="1890207353314751437" name="dropdown_menu">"Drop-down-Menü"</string>
     <string name="error_icon_content_description">Fehler</string>
     <string name="exposed_dropdown_menu_content_description">Drop-down-Menü anzeigen</string>
     <string msgid="4566929209979330987" name="fallback_menu_item_copy_link">"Link kopieren"</string>
@@ -97,8 +92,6 @@
     <string name="icon_content_description">Dialogfeldsymbol</string>
     <string gender="unknown" name="image_description">Bild</string>
     <string gender="unknown" name="imagebutton_description">Button, Bild</string>
-    <string msgid="6827826412747255547" name="in_progress">"In Bearbeitung"</string>
-    <string msgid="7933458017204019916" name="indeterminate">"Teilweise aktiviert"</string>
     <string name="item_view_role_description">Tab</string>
     <string name="material_clock_toggle_content_description">Vormittags oder Nachmittags auswählen</string>
     <string name="material_hour_selection">Stunde auswählen</string>
@@ -148,37 +141,24 @@
     <string name="mtrl_picker_toggle_to_day_selection">Tippen, um zur Tagesauswahl zu wechseln</string>
     <string name="mtrl_picker_toggle_to_text_input_mode">In den Texteingabemodus wechseln</string>
     <string name="mtrl_picker_toggle_to_year_selection">Tippen, um zur Jahresauswahl zu wechseln</string>
-    <string msgid="542007171693138492" name="navigation_menu">"Navigationsmenü"</string>
-    <string msgid="6610465462668679431" name="not_selected">"Nicht ausgewählt"</string>
     <string name="password_toggle_content_description">Passwort anzeigen</string>
     <string name="pick_image_camera">Kamera</string>
     <string name="pick_image_chooser_title">Quelle wählen</string>
     <string name="pick_image_gallery">Galerie</string>
     <string gender="unknown" name="progressbar_description">Statusanzeige</string>
     <string gender="unknown" name="radiogroup_description">Gruppe von Buttons</string>
-    <string msgid="5941395253238309765" name="range_end">"Bereichsende"</string>
-    <string msgid="7097486360902471446" name="range_start">"Bereichsstart"</string>
     <string gender="unknown" name="scrollbar_description">Scroll-Leiste</string>
     <string msgid="6264217191555673260" name="search_menu_title">"Suche"</string>
-    <string msgid="6043586758067023" name="selected">"Ausgewählt"</string>
     <string gender="unknown" name="spinbutton_description">Auswahl-Button</string>
     <string gender="unknown" name="state_busy_description">in Gebrauch</string>
     <string gender="unknown" name="state_collapsed_description">ausgeblendet</string>
-    <string msgid="4139871816613051306" name="state_empty">"Leer"</string>
     <string gender="unknown" name="state_expanded_description">eingeblendet</string>
     <string gender="unknown" name="state_mixed_description">gemischt</string>
-    <string msgid="5834637030682409883" name="state_off">"Aus"</string>
     <string gender="unknown" name="state_off_description">aus</string>
-    <string msgid="1490883874751719580" name="state_on">"An"</string>
     <string gender="unknown" name="state_on_description">ein</string>
     <string gender="unknown" name="state_unselected_description">nicht ausgewählt</string>
     <string msgid="6277540029070332960" name="status_bar_notification_info_overflow">"999+"</string>
     <string gender="unknown" name="summary_description">Übersicht</string>
-    <string msgid="2561197295334830845" name="switch_role">"Wechseln"</string>
-    <string msgid="1672349317127674378" name="tab">"Tab"</string>
     <string gender="unknown" name="tablist_description">Tab-Liste</string>
-    <string msgid="5946805113151406391" name="template_percent">"<ns1:g id="PERCENTAGE">%1$d</ns1:g> Prozent."</string>
     <string gender="unknown" name="toolbar_description">Symbolleiste</string>
-    <string msgid="3765533235322692011" name="tooltip_description">"Kurzinfo"</string>
-    <string msgid="3124740595719787496" name="tooltip_label">"Kurzinfo anzeigen"</string>
 </resources>

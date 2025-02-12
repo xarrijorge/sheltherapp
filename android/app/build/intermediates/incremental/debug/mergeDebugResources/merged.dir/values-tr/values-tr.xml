@@ -43,8 +43,6 @@
     <string name="character_counter_content_description">Girilen karakter: %1$d / %2$d</string>
     <string name="character_counter_overflowed_content_description">Karakter sınırı aşıldı %1$d / %2$d</string>
     <string name="clear_text_end_icon_content_description">Metni temizle</string>
-    <string msgid="406453423630273620" name="close_drawer">"Gezinme menüsünü kapat"</string>
-    <string msgid="7573152094250666567" name="close_sheet">"Sayfayı kapat"</string>
     <string gender="unknown" name="combobox_description">Karma Kutu</string>
     <string msgid="2523291102206661146" name="common_google_play_services_enable_button">Etkinleştir</string>
     <string msgid="227660514972886228" name="common_google_play_services_enable_text">Google Play hizmetlerini etkinleştirmezseniz %1$s çalışmaz.</string>
@@ -69,10 +67,7 @@
     <string name="crop_image_activity_no_permissions">İptal ediliyor, gerekli izinler verilmiyor</string>
     <string name="crop_image_activity_title"/>
     <string name="crop_image_menu_crop">Kırp</string>
-    <string msgid="8038256446254964252" name="default_error_message">"Geçersiz giriş"</string>
     <string msgid="4776854077120974966" name="default_error_msg">"Bilinmeyen hata"</string>
-    <string msgid="6312721426453364202" name="default_popup_window_title">"Pop-up Pencere"</string>
-    <string msgid="1890207353314751437" name="dropdown_menu">"Açılır menü"</string>
     <string name="error_icon_content_description">Hata</string>
     <string name="exposed_dropdown_menu_content_description">Açılır menüyü göster</string>
     <string msgid="4566929209979330987" name="fallback_menu_item_copy_link">"Bağlantıyı kopyala"</string>
@@ -97,8 +92,6 @@
     <string name="icon_content_description">İletişim kutusu simgesi</string>
     <string gender="unknown" name="image_description">Görsel</string>
     <string gender="unknown" name="imagebutton_description">Düğme, Görsel</string>
-    <string msgid="6827826412747255547" name="in_progress">"Devam ediyor"</string>
-    <string msgid="7933458017204019916" name="indeterminate">"Kısmi olarak kontrol edildi"</string>
     <string name="item_view_role_description">Sekme</string>
     <string gender="unknown" name="link_description">Bağlantı</string>
     <string name="material_clock_toggle_content_description">ÖÖ veya ÖS\'yi seçin</string>
@@ -149,37 +142,24 @@
     <string name="mtrl_picker_toggle_to_day_selection">Gün seçmeye geçmek için dokunun</string>
     <string name="mtrl_picker_toggle_to_text_input_mode">Metin giriş moduna geç</string>
     <string name="mtrl_picker_toggle_to_year_selection">Yıl seçmeye geçmek için dokunun</string>
-    <string msgid="542007171693138492" name="navigation_menu">"Gezinme menüsü"</string>
-    <string msgid="6610465462668679431" name="not_selected">"Seçili değil"</string>
     <string name="password_toggle_content_description">Şifreyi göster</string>
     <string name="pick_image_chooser_title">Kaynağı seçin</string>
     <string gender="unknown" name="progressbar_description">İlerleme Çubuğu</string>
     <string gender="unknown" name="radiogroup_description">Radyo Grubu</string>
-    <string msgid="5941395253238309765" name="range_end">"Aralık sonu"</string>
-    <string msgid="7097486360902471446" name="range_start">"Aralık başlangıcı"</string>
     <string gender="unknown" name="rn_tab_description">Sekme</string>
     <string gender="unknown" name="scrollbar_description">Kaydırma Çubuğu</string>
     <string msgid="6264217191555673260" name="search_menu_title">"Ara"</string>
-    <string msgid="6043586758067023" name="selected">"Seçili"</string>
     <string gender="unknown" name="spinbutton_description">Döndürme Düğmesi</string>
     <string gender="unknown" name="state_busy_description">meşgul</string>
     <string gender="unknown" name="state_collapsed_description">daraltılmış</string>
-    <string msgid="4139871816613051306" name="state_empty">"Boş"</string>
     <string gender="unknown" name="state_expanded_description">genişletilmiş</string>
     <string gender="unknown" name="state_mixed_description">karışık</string>
-    <string msgid="5834637030682409883" name="state_off">"Kapalı"</string>
     <string gender="unknown" name="state_off_description">kapalı</string>
-    <string msgid="1490883874751719580" name="state_on">"Açık"</string>
     <string gender="unknown" name="state_on_description">açık</string>
     <string gender="unknown" name="state_unselected_description">seçili değil</string>
     <string msgid="6277540029070332960" name="status_bar_notification_info_overflow">"999+"</string>
     <string gender="unknown" name="summary_description">Özet</string>
-    <string msgid="2561197295334830845" name="switch_role">"Anahtar"</string>
-    <string msgid="1672349317127674378" name="tab">"Sekme"</string>
     <string gender="unknown" name="tablist_description">Sekme Listesi</string>
-    <string msgid="5946805113151406391" name="template_percent">"Yüzde <ns1:g id="PERCENTAGE">%1$d</ns1:g>."</string>
     <string gender="unknown" name="timer_description">Zamanlayıcı</string>
     <string gender="unknown" name="toolbar_description">Araç Çubuğu</string>
-    <string msgid="3765533235322692011" name="tooltip_description">"ipucu"</string>
-    <string msgid="3124740595719787496" name="tooltip_label">"ipucunu göster"</string>
 </resources>

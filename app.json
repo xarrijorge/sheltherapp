@@ -3,68 +3,16 @@
     "name": "shelther-app",
     "slug": "shelther-app",
     "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/ico.png",
-    "userInterfaceStyle": "dark",
-    "splash": {
-      "image": "./assets/sheltherlogoBG.jpeg",
-      "backgroundColor": "#171232"
-    },
-    "ios": {
-      "supportsTablet": true,
-      "infoPlist": {
-        "NSLocationWhenInUseUsageDescription": "We need your location to show nearby places."
-      },
-      "bundleIdentifier": "com.shelther.app"
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/sheltherlogoBG.jpeg",
-        "backgroundColor": "#ffffff"
-      },
-      "package": "com.shelther.app",
-      "permissions": [
-        "android.permission.ACCESS_FINE_LOCATION",
-        "android.permission.ACCESS_COARSE_LOCATION",
-        "android.permission.READ_CONTACTS",
-        "android.permission.WRITE_CONTACTS",
-        "android.permission.RECORD_AUDIO"
-      ]
-    },
     "web": {
       "favicon": "./assets/ico.ico"
     },
-    "plugins": [
-      "expo-font",
-      [
-        "expo-secure-store",
-        {
-          "faceIDPermission": "Allow $(PRODUCT_NAME) to access your Face ID biometric data."
-        }
-      ],
-      [
-        "expo-contacts",
-        {
-          "contactsPermission": "Allow $(PRODUCT_NAME) to access your contacts."
-        }
-      ],
-      [
-        "expo-image-picker",
-        {
-          "photosPermission": "Allow $(PRODUCT_NAME) to access your photos."
-        }
-      ],
-      [
-        "expo-location",
-        {
-          "locationPermission": "Allow $(PRODUCT_NAME) to access your location."
-        }
-      ]
-    ],
     "extra": {
       "eas": {
         "projectId": "2b53f666-c580-4ee0-95f1-99bef0eb37ca"
       }
+    },
+    "android": {
+      "package": "com.xroot.sheltherapp"
     }
   }
 }
