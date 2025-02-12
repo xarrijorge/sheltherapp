@@ -46,6 +46,5 @@ with_node \
   --eval "require(require.resolve('expo-modules-autolinking', { paths: [require.resolve('expo/package.json')] }))(process.argv.slice(1))" \
   generate-modules-provider  \
   --target "/Users/swordsman/Dev/Shelther/shelther-app/ios/Pods/Target Support Files/Pods-sheltherapp/ExpoModulesProvider.swift" \
-  --entitlement "/Users/swordsman/Dev/Shelther/shelther-app/ios/sheltherapp/sheltherapp.entitlements" \
   --platform "apple" \
-  --packages "expo" "expo-asset" "expo-constants" "expo-contacts" "expo-dev-launcher" "expo-dev-menu" "expo-file-system" "expo-font" "expo-image-picker" "expo-keep-awake" "expo-location" "expo-secure-store" "expo-sensors"
+  --packages "expo-asset" "expo-constants" "expo-contacts" "expo-dev-launcher" "expo-dev-menu" "expo-file-system" "expo-font" "expo-image-picker" "expo-keep-awake" "expo-secure-store" "expo-sensors"

@@ -23,6 +23,6 @@
     "DEFINES_MODULE": "YES"
   },
   "platforms": {
-    "ios": "15.1"
+    "ios": "13.4"
   }
 }

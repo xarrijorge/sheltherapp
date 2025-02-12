@@ -13,16 +13,6 @@
 
 #import "RNCGeolocationSpec.h"
 
-
-@implementation NativeRNCGeolocationSpecBase
-
-
-- (void)setEventEmitterCallback:(EventEmitterCallbackWrapper *)eventEmitterCallbackWrapper
-{
-  _eventEmitterCallback = std::move(eventEmitterCallbackWrapper->_eventEmitterCallback);
-}
-@end
-
 @implementation RCTCxxConvert (NativeRNCGeolocation_SpecSetConfigurationConfig)
 + (RCTManagedPointer *)JS_NativeRNCGeolocation_SpecSetConfigurationConfig:(id)json
 {

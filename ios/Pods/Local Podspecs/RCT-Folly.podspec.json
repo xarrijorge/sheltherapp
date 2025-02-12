@@ -91,11 +91,8 @@
     "HEADER_SEARCH_PATHS": "\"$(PODS_ROOT)/boost\""
   },
   "default_subspecs": "Default",
-  "resource_bundles": {
-    "RCT-Folly_privacy": "RCT-Folly/PrivacyInfo.xcprivacy"
-  },
   "platforms": {
-    "ios": "15.1"
+    "ios": "13.4"
   },
   "subspecs": [
     {

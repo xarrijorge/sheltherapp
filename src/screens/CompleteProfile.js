@@ -17,7 +17,6 @@ const CompleteProfileScreen = ({ route, navigation }) => {
     const [photo, setPhoto] = useState(null);
     const [address, setAddress] = useState('');
     const [contacts, setContacts] = useState([]);
-    const [places, setPlaces] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedContact, setSelectedContact] = useState(null);
     const [selectedPhoneNumber, setSelectedPhoneNumber] = useState('');
@@ -25,7 +24,6 @@ const CompleteProfileScreen = ({ route, navigation }) => {
 
     const email = route.params.email;
 
-    const completion = name && password && confirmPassword && photo && address && contacts.length > 0;
 
     const moveImageToShelter = async (uri) => {
         try {

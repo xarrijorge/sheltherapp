@@ -16,22 +16,229 @@ namespace facebook::react {
 
 
   
-#pragma mark - NativeRNCGeolocationGeolocationError
+#pragma mark - RNCGeolocationBaseGeolocationError
 
 template <typename P0, typename P1, typename P2, typename P3, typename P4>
-struct NativeRNCGeolocationGeolocationError {
+struct [[deprecated("Use RNCGeolocationGeolocationError instead.")]] RNCGeolocationBaseGeolocationError {
   P0 code;
   P1 message;
   P2 PERMISSION_DENIED;
   P3 POSITION_UNAVAILABLE;
   P4 TIMEOUT;
-  bool operator==(const NativeRNCGeolocationGeolocationError &other) const {
+  bool operator==(const RNCGeolocationBaseGeolocationError &other) const {
+    return code == other.code && message == other.message && PERMISSION_DENIED == other.PERMISSION_DENIED && POSITION_UNAVAILABLE == other.POSITION_UNAVAILABLE && TIMEOUT == other.TIMEOUT;
+  }
+};
+
+template <typename P0, typename P1, typename P2, typename P3, typename P4>
+struct [[deprecated("Use RNCGeolocationGeolocationErrorBridging instead.")]] RNCGeolocationBaseGeolocationErrorBridging {
+  static RNCGeolocationBaseGeolocationError<P0, P1, P2, P3, P4> fromJs(
+      jsi::Runtime &rt,
+      const jsi::Object &value,
+      const std::shared_ptr<CallInvoker> &jsInvoker) {
+    RNCGeolocationBaseGeolocationError<P0, P1, P2, P3, P4> result{
+      bridging::fromJs<P0>(rt, value.getProperty(rt, "code"), jsInvoker),
+      bridging::fromJs<P1>(rt, value.getProperty(rt, "message"), jsInvoker),
+      bridging::fromJs<P2>(rt, value.getProperty(rt, "PERMISSION_DENIED"), jsInvoker),
+      bridging::fromJs<P3>(rt, value.getProperty(rt, "POSITION_UNAVAILABLE"), jsInvoker),
+      bridging::fromJs<P4>(rt, value.getProperty(rt, "TIMEOUT"), jsInvoker)};
+    return result;
+  }
+
+#ifdef DEBUG
+  static double codeToJs(jsi::Runtime &rt, P0 value) {
+    return bridging::toJs(rt, value);
+  }
+
+  static jsi::String messageToJs(jsi::Runtime &rt, P1 value) {
+    return bridging::toJs(rt, value);
+  }
+
+  static double PERMISSION_DENIEDToJs(jsi::Runtime &rt, P2 value) {
+    return bridging::toJs(rt, value);
+  }
+
+  static double POSITION_UNAVAILABLEToJs(jsi::Runtime &rt, P3 value) {
+    return bridging::toJs(rt, value);
+  }
+
+  static double TIMEOUTToJs(jsi::Runtime &rt, P4 value) {
+    return bridging::toJs(rt, value);
+  }
+#endif
+
+  static jsi::Object toJs(
+      jsi::Runtime &rt,
+      const RNCGeolocationBaseGeolocationError<P0, P1, P2, P3, P4> &value,
+      const std::shared_ptr<CallInvoker> &jsInvoker) {
+    auto result = facebook::jsi::Object(rt);
+    result.setProperty(rt, "code", bridging::toJs(rt, value.code, jsInvoker));
+    result.setProperty(rt, "message", bridging::toJs(rt, value.message, jsInvoker));
+    result.setProperty(rt, "PERMISSION_DENIED", bridging::toJs(rt, value.PERMISSION_DENIED, jsInvoker));
+    result.setProperty(rt, "POSITION_UNAVAILABLE", bridging::toJs(rt, value.POSITION_UNAVAILABLE, jsInvoker));
+    result.setProperty(rt, "TIMEOUT", bridging::toJs(rt, value.TIMEOUT, jsInvoker));
+    return result;
+  }
+};
+
+
+
+#pragma mark - RNCGeolocationBaseGeolocationOptions
+
+template <typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6>
+struct [[deprecated("Use RNCGeolocationGeolocationOptions instead.")]] RNCGeolocationBaseGeolocationOptions {
+  P0 timeout;
+  P1 maximumAge;
+  P2 enableHighAccuracy;
+  P3 distanceFilter;
+  P4 useSignificantChanges;
+  P5 interval;
+  P6 fastestInterval;
+  bool operator==(const RNCGeolocationBaseGeolocationOptions &other) const {
+    return timeout == other.timeout && maximumAge == other.maximumAge && enableHighAccuracy == other.enableHighAccuracy && distanceFilter == other.distanceFilter && useSignificantChanges == other.useSignificantChanges && interval == other.interval && fastestInterval == other.fastestInterval;
+  }
+};
+
+template <typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6>
+struct [[deprecated("Use RNCGeolocationGeolocationOptionsBridging instead.")]] RNCGeolocationBaseGeolocationOptionsBridging {
+  static RNCGeolocationBaseGeolocationOptions<P0, P1, P2, P3, P4, P5, P6> fromJs(
+      jsi::Runtime &rt,
+      const jsi::Object &value,
+      const std::shared_ptr<CallInvoker> &jsInvoker) {
+    RNCGeolocationBaseGeolocationOptions<P0, P1, P2, P3, P4, P5, P6> result{
+      bridging::fromJs<P0>(rt, value.getProperty(rt, "timeout"), jsInvoker),
+      bridging::fromJs<P1>(rt, value.getProperty(rt, "maximumAge"), jsInvoker),
+      bridging::fromJs<P2>(rt, value.getProperty(rt, "enableHighAccuracy"), jsInvoker),
+      bridging::fromJs<P3>(rt, value.getProperty(rt, "distanceFilter"), jsInvoker),
+      bridging::fromJs<P4>(rt, value.getProperty(rt, "useSignificantChanges"), jsInvoker),
+      bridging::fromJs<P5>(rt, value.getProperty(rt, "interval"), jsInvoker),
+      bridging::fromJs<P6>(rt, value.getProperty(rt, "fastestInterval"), jsInvoker)};
+    return result;
+  }
+
+#ifdef DEBUG
+  static double timeoutToJs(jsi::Runtime &rt, P0 value) {
+    return bridging::toJs(rt, value);
+  }
+
+  static double maximumAgeToJs(jsi::Runtime &rt, P1 value) {
+    return bridging::toJs(rt, value);
+  }
+
+  static bool enableHighAccuracyToJs(jsi::Runtime &rt, P2 value) {
+    return bridging::toJs(rt, value);
+  }
+
+  static double distanceFilterToJs(jsi::Runtime &rt, P3 value) {
+    return bridging::toJs(rt, value);
+  }
+
+  static bool useSignificantChangesToJs(jsi::Runtime &rt, P4 value) {
+    return bridging::toJs(rt, value);
+  }
+
+  static double intervalToJs(jsi::Runtime &rt, P5 value) {
+    return bridging::toJs(rt, value);
+  }
+
+  static double fastestIntervalToJs(jsi::Runtime &rt, P6 value) {
+    return bridging::toJs(rt, value);
+  }
+#endif
+
+  static jsi::Object toJs(
+      jsi::Runtime &rt,
+      const RNCGeolocationBaseGeolocationOptions<P0, P1, P2, P3, P4, P5, P6> &value,
+      const std::shared_ptr<CallInvoker> &jsInvoker) {
+    auto result = facebook::jsi::Object(rt);
+    if (value.timeout) {
+      result.setProperty(rt, "timeout", bridging::toJs(rt, value.timeout.value(), jsInvoker));
+    }
+    if (value.maximumAge) {
+      result.setProperty(rt, "maximumAge", bridging::toJs(rt, value.maximumAge.value(), jsInvoker));
+    }
+    if (value.enableHighAccuracy) {
+      result.setProperty(rt, "enableHighAccuracy", bridging::toJs(rt, value.enableHighAccuracy.value(), jsInvoker));
+    }
+    if (value.distanceFilter) {
+      result.setProperty(rt, "distanceFilter", bridging::toJs(rt, value.distanceFilter.value(), jsInvoker));
+    }
+    if (value.useSignificantChanges) {
+      result.setProperty(rt, "useSignificantChanges", bridging::toJs(rt, value.useSignificantChanges.value(), jsInvoker));
+    }
+    if (value.interval) {
+      result.setProperty(rt, "interval", bridging::toJs(rt, value.interval.value(), jsInvoker));
+    }
+    if (value.fastestInterval) {
+      result.setProperty(rt, "fastestInterval", bridging::toJs(rt, value.fastestInterval.value(), jsInvoker));
+    }
+    return result;
+  }
+};
+
+
+
+#pragma mark - RNCGeolocationBaseGeolocationResponse
+
+template <typename P0, typename P1>
+struct [[deprecated("Use RNCGeolocationGeolocationResponse instead.")]] RNCGeolocationBaseGeolocationResponse {
+  P0 coords;
+  P1 timestamp;
+  bool operator==(const RNCGeolocationBaseGeolocationResponse &other) const {
+    return coords == other.coords && timestamp == other.timestamp;
+  }
+};
+
+template <typename P0, typename P1>
+struct [[deprecated("Use RNCGeolocationGeolocationResponseBridging instead.")]] RNCGeolocationBaseGeolocationResponseBridging {
+  static RNCGeolocationBaseGeolocationResponse<P0, P1> fromJs(
+      jsi::Runtime &rt,
+      const jsi::Object &value,
+      const std::shared_ptr<CallInvoker> &jsInvoker) {
+    RNCGeolocationBaseGeolocationResponse<P0, P1> result{
+      bridging::fromJs<P0>(rt, value.getProperty(rt, "coords"), jsInvoker),
+      bridging::fromJs<P1>(rt, value.getProperty(rt, "timestamp"), jsInvoker)};
+    return result;
+  }
+
+#ifdef DEBUG
+  static jsi::Object coordsToJs(jsi::Runtime &rt, P0 value) {
+    return bridging::toJs(rt, value);
+  }
+
+  static double timestampToJs(jsi::Runtime &rt, P1 value) {
+    return bridging::toJs(rt, value);
+  }
+#endif
+
+  static jsi::Object toJs(
+      jsi::Runtime &rt,
+      const RNCGeolocationBaseGeolocationResponse<P0, P1> &value,
+      const std::shared_ptr<CallInvoker> &jsInvoker) {
+    auto result = facebook::jsi::Object(rt);
+    result.setProperty(rt, "coords", bridging::toJs(rt, value.coords, jsInvoker));
+    result.setProperty(rt, "timestamp", bridging::toJs(rt, value.timestamp, jsInvoker));
+    return result;
+  }
+};
+
+
+#pragma mark - RNCGeolocationGeolocationError
+
+template <typename P0, typename P1, typename P2, typename P3, typename P4>
+struct RNCGeolocationGeolocationError {
+  P0 code;
+  P1 message;
+  P2 PERMISSION_DENIED;
+  P3 POSITION_UNAVAILABLE;
+  P4 TIMEOUT;
+  bool operator==(const RNCGeolocationGeolocationError &other) const {
     return code == other.code && message == other.message && PERMISSION_DENIED == other.PERMISSION_DENIED && POSITION_UNAVAILABLE == other.POSITION_UNAVAILABLE && TIMEOUT == other.TIMEOUT;
   }
 };
 
 template <typename T>
-struct NativeRNCGeolocationGeolocationErrorBridging {
+struct RNCGeolocationGeolocationErrorBridging {
   static T types;
 
   static T fromJs(
@@ -85,10 +292,10 @@ struct NativeRNCGeolocationGeolocationErrorBridging {
 
 
 
-#pragma mark - NativeRNCGeolocationGeolocationOptions
+#pragma mark - RNCGeolocationGeolocationOptions
 
 template <typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6>
-struct NativeRNCGeolocationGeolocationOptions {
+struct RNCGeolocationGeolocationOptions {
   P0 timeout;
   P1 maximumAge;
   P2 enableHighAccuracy;
@@ -96,13 +303,13 @@ struct NativeRNCGeolocationGeolocationOptions {
   P4 useSignificantChanges;
   P5 interval;
   P6 fastestInterval;
-  bool operator==(const NativeRNCGeolocationGeolocationOptions &other) const {
+  bool operator==(const RNCGeolocationGeolocationOptions &other) const {
     return timeout == other.timeout && maximumAge == other.maximumAge && enableHighAccuracy == other.enableHighAccuracy && distanceFilter == other.distanceFilter && useSignificantChanges == other.useSignificantChanges && interval == other.interval && fastestInterval == other.fastestInterval;
   }
 };
 
 template <typename T>
-struct NativeRNCGeolocationGeolocationOptionsBridging {
+struct RNCGeolocationGeolocationOptionsBridging {
   static T types;
 
   static T fromJs(
@@ -182,19 +389,19 @@ struct NativeRNCGeolocationGeolocationOptionsBridging {
 
 
 
-#pragma mark - NativeRNCGeolocationGeolocationResponse
+#pragma mark - RNCGeolocationGeolocationResponse
 
 template <typename P0, typename P1>
-struct NativeRNCGeolocationGeolocationResponse {
+struct RNCGeolocationGeolocationResponse {
   P0 coords;
   P1 timestamp;
-  bool operator==(const NativeRNCGeolocationGeolocationResponse &other) const {
+  bool operator==(const RNCGeolocationGeolocationResponse &other) const {
     return coords == other.coords && timestamp == other.timestamp;
   }
 };
 
 template <typename T>
-struct NativeRNCGeolocationGeolocationResponseBridging {
+struct RNCGeolocationGeolocationResponseBridging {
   static T types;
 
   static T fromJs(
@@ -257,14 +464,11 @@ protected:
     : TurboModule(std::string{NativeRNCGeolocationCxxSpec::kModuleName}, jsInvoker),
       delegate_(reinterpret_cast<T*>(this), jsInvoker) {}
 
-
 private:
   class Delegate : public NativeRNCGeolocationCxxSpecJSI {
   public:
     Delegate(T *instance, std::shared_ptr<CallInvoker> jsInvoker) :
-      NativeRNCGeolocationCxxSpecJSI(std::move(jsInvoker)), instance_(instance) {
-
-    }
+      NativeRNCGeolocationCxxSpecJSI(std::move(jsInvoker)), instance_(instance) {}
 
     void setConfiguration(jsi::Runtime &rt, jsi::Object config) override {
       static_assert(
@@ -324,7 +528,6 @@ private:
     }
 
   private:
-    friend class NativeRNCGeolocationCxxSpec;
     T *instance_;
   };
 

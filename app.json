@@ -10,9 +10,7 @@
       "eas": {
         "projectId": "2b53f666-c580-4ee0-95f1-99bef0eb37ca"
       }
-    },
-    "android": {
-      "package": "com.xroot.sheltherapp"
     }
+    
   }
 }

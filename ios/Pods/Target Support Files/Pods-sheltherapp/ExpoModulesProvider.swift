@@ -6,7 +6,6 @@
  */
 
 import ExpoModulesCore
-import Expo
 import ExpoAsset
 import EXConstants
 import ExpoContacts
@@ -14,7 +13,6 @@ import ExpoFileSystem
 import ExpoFont
 import ExpoImagePicker
 import ExpoKeepAwake
-import ExpoLocation
 import ExpoSecureStore
 import ExpoSensors
 #if EXPO_CONFIGURATION_DEBUG
@@ -27,16 +25,13 @@ public class ExpoModulesProvider: ModulesProvider {
   public override func getModuleClasses() -> [AnyModule.Type] {
     #if EXPO_CONFIGURATION_DEBUG
     return [
-      ExpoFetchModule.self,
       AssetModule.self,
       ConstantsModule.self,
       ContactsModule.self,
       FileSystemModule.self,
-      FileSystemNextModule.self,
       FontLoaderModule.self,
       ImagePickerModule.self,
       KeepAwakeModule.self,
-      LocationModule.self,
       SecureStoreModule.self,
       AccelerometerModule.self,
       BarometerModule.self,
@@ -55,16 +50,13 @@ public class ExpoModulesProvider: ModulesProvider {
     ]
     #else
     return [
-      ExpoFetchModule.self,
       AssetModule.self,
       ConstantsModule.self,
       ContactsModule.self,
       FileSystemModule.self,
-      FileSystemNextModule.self,
       FontLoaderModule.self,
       ImagePickerModule.self,
       KeepAwakeModule.self,
-      LocationModule.self,
       SecureStoreModule.self,
       AccelerometerModule.self,
       BarometerModule.self,
@@ -100,9 +92,5 @@ public class ExpoModulesProvider: ModulesProvider {
     return [
     ]
     #endif
-  }
-
-  public override func getAppCodeSignEntitlements() -> AppCodeSignEntitlements {
-    return AppCodeSignEntitlements.from(json: #"{}"#)
   }
 }

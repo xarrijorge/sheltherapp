@@ -14,11 +14,6 @@
 #ifndef __cplusplus
 #error This file must be compiled as Obj-C++. If you are importing it, you must change your file extension to .mm.
 #endif
-
-// Avoid multiple includes of RNCGeolocationSpec symbols
-#ifndef RNCGeolocationSpec_H
-#define RNCGeolocationSpec_H
-
 #import <Foundation/Foundation.h>
 #import <RCTRequired/RCTRequired.h>
 #import <RCTTypeSafety/RCTConvertHelpers.h>
@@ -82,16 +77,6 @@ namespace JS {
 - (void)removeListeners:(double)count;
 
 @end
-
-@interface NativeRNCGeolocationSpecBase : NSObject {
-@protected
-facebook::react::EventEmitterCallback _eventEmitterCallback;
-}
-- (void)setEventEmitterCallback:(EventEmitterCallbackWrapper *)eventEmitterCallbackWrapper;
-
-
-@end
-
 namespace facebook::react {
   /**
    * ObjC++ class for module 'NativeRNCGeolocation'
@@ -151,4 +136,3 @@ inline std::optional<double> JS::NativeRNCGeolocation::GeolocationOptions::faste
   id const p = _v[@"fastestInterval"];
   return RCTBridgingToOptionalDouble(p);
 }
-#endif // RNCGeolocationSpec_H
