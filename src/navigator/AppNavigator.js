@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { View, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, Text } from 'react-native';
 import LoginScreen from '../screens/Login';
 import RegisterScreen from '../screens/Register';
 import VerifyOTPScreen from '../screens/VerifyOTP';
@@ -11,6 +11,7 @@ import ProfileScreen from '../screens/Profile';
 import SettingsScreen from '../screens/Settings';
 import { Appbar, Avatar } from 'react-native-paper';
 import * as SecureStore from 'expo-secure-store';
+import useUserStore from '../stores/userStore';
 
 const Stack = createStackNavigator();
 
@@ -19,12 +20,16 @@ const CustomNavigationBar = ({ navigation, back, avataruri, name }) => {
         <Appbar.Header style={styles.header}>
             {back ? <Appbar.BackAction onPress={navigation.goBack} /> : null}
             <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
-                <Avatar.Image 
-                    source={{ uri: avataruri || 'https://via.placeholder.com/40' }} 
+                <Avatar.Image
+                    source={avataruri ? { uri: avataruri } : require('../../assets/genericPerson.png')}
                     size={40}
                     style={styles.avatar}
-                />
+                /> 
             </TouchableOpacity>
+            <View style={styles.spacer} />
+            <View>
+            <Text style={styles.name}>{name}</Text>
+            </View>
             <View style={styles.spacer} />
             <Appbar.Action icon="cog" onPress={() => navigation.navigate('Settings')} />
         </Appbar.Header>
@@ -32,27 +37,18 @@ const CustomNavigationBar = ({ navigation, back, avataruri, name }) => {
 };
 
 const AppNavigator = () => {
+    const { user } = useUserStore(); // ✅ Call Hook at the top level
     const [loggedIn, setLoggedIn] = useState(false);
     const [avataruri, setAvatarUri] = useState('');
     const [username, setUsername] = useState('');
 
-    const fetchUser = async () => {
-        try {
-            const userData = await SecureStore.getItemAsync('userData');
-            if (userData) {
-                const { loggedIn, photo, name } = JSON.parse(userData);
-                setLoggedIn(loggedIn ? true : false);
-                setAvatarUri(photo);
-                setUsername(name);
-            }
-        } catch (error) {
-            console.error('Error fetching user data:', error);
-        }
-    };
-
     useEffect(() => {
-        fetchUser();
-    }, []);
+        if (user) {
+            setLoggedIn(!!user.loggedIn);
+            setAvatarUri(user.photo || '');
+            setUsername(user.name || 'Guest');
+        }
+    }, [user]); // ✅ Runs when `user` changes
 
     return (
         <NavigationContainer>
@@ -96,6 +92,11 @@ const styles = StyleSheet.create({
     },
     spacer: {
         flex: 1,
+    },
+    name: {
+        fontSize: 22,
+        fontWeight: 'bold',
+        marginTop: 8,
     },
 });
 
