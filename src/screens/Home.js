@@ -1,22 +1,22 @@
 import { View, Text, StyleSheet, TouchableOpacity, Animated, Easing, Alert } from 'react-native';
 import { Gyroscope } from 'expo-sensors';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import * as Location from 'expo-location';
 import axios from '../utils/axiosConfig';
 
 const throttle = (func, delay) => {
-    let throttling = false;
-
+    let lastCall = 0;
     return (...args) => {
-        if (!throttling) {
-            throttling = true;
+        const now = Date.now();
+        if (now - lastCall >= delay) {
             func(...args);
-            setTimeout(() => {
-                throttling = false;
-            }, delay);
+            lastCall = now;
+        } else {
+            Alert.alert('Please wait', 'Emergency alert was recently sent. Please wait before sending another.');
         }
     };
 };
+
 export default function Home() {
     const [{ x, y, z }, setData] = useState({ x: 0, y: 0, z: 0 });
     const [subscription, setSubscription] = useState(null);
@@ -25,7 +25,6 @@ export default function Home() {
     const lastZ = useRef(0);
 
     const [alertMode, setAlertMode] = useState('Standby'); // 'Standby' or 'Panic'
-    const [cooldown, setCooldown] = useState(false); // Cooldown state
     const scaleAnim = useRef(new Animated.Value(1)).current;
     const rippleAnim = useRef(new Animated.Value(0)).current;
 
@@ -65,9 +64,9 @@ export default function Home() {
         }
     }
 
-    const sendEmergencyAlert = async (location) => {
-        if (cooldown) {
-            Alert.alert('Cooldown', 'Please wait before sending another emergency alert.');
+    const sendEmergencyAlert = (location) => {
+        if (!location) {
+            Alert.alert('Error', 'Could not get location. Please check your location settings.');
             return;
         }
 
@@ -75,127 +74,133 @@ export default function Home() {
             lat: location.latitude,
             long: location.longitude,
         });
-
-        try {
-            const response = await axios.post('/user/emergency', {
-                lat: location.latitude,
-                long: location.longitude,
-            });
-
-            console.log("Full Response Object:", response);
-            console.log("Response Data:", response.data);
-            Alert.alert('Emergency Sent', `The emergency alert has been sent!\nLocation: ${location.latitude}, ${location.longitude}`);
-
-            // Start cooldown period
-            setCooldown(true);
-            setTimeout(() => {
-                setCooldown(false); // End cooldown after 10 seconds
-            }, 10000); // 10-second cooldown
-        } catch (error) {
+    
+        axios.post('/user/emergency', {
+            lat: location.latitude,
+            long: location.longitude,
+        })
+        .then(response => {
+            console.log("Response Data:", response);
+            Alert.alert('Emergency Sent', 
+                `The emergency alert has been sent!\nLocation: ${location.latitude}, ${location.longitude}`
+            );
+        })
+        .catch(error => {
             if (error.response) {
                 console.log("Error Response Data:", error.response.data);
                 console.log("Error Response Status:", error.response.status);
-                console.log("Error Response Headers:", error.response.headers);
             } else if (error.request) {
                 console.log("No Response Received. Request Data:", error.request);
             } else {
                 console.log("Request Setup Error:", error.message);
             }
-            console.error("Error sending emergency alert:", error);
             Alert.alert('Error', 'Failed to send emergency alert. Please try again.');
-        }
+        });
     };
 
-    const debouncedSendBroadCastMessage = useRef(null); // Debounced function reference
-
-    useEffect(() => {
-        // Debounce the sendBroadCastMessage function
-        debouncedSendBroadCastMessage.current = debounce(sendBroadCastMessage, 1000); // 1-second debounce
-    }, []);
-
-    async function sendBroadCastMessage() {
-        if (cooldown) {
-            Alert.alert('Cooldown', 'Please wait before sending another emergency alert.');
-            return;
-        }
-
-        const location = await getLocation();
-
-        const locationMessage = location
-            ? `Location: ${location.latitude}, ${location.longitude}`
-            : 'Location data not available';
-
-        if (alertMode === 'Standby') {
-            Alert.alert(
-                'Confirm Emergency',
-                `Are you sure you want to send the emergency alert?\n${locationMessage}`,
-                [
-                    {
-                        text: 'Cancel',
-                        style: 'cancel',
-                    },
-                    {
-                        text: 'Yes',
-                        onPress: async () => {
-                            try {
-                                await sendEmergencyAlert(location);
-                            } catch (error) {
-                                console.error('Error sending emergency alert:', error);
-                                Alert.alert('Error', 'Failed to send emergency alert. Please try again.');
-                            }
-                        },
-                    },
-                ]
-            );
-        } else if (alertMode === 'Panic') {
-            try {
-                await sendEmergencyAlert(location);
-            } catch (error) {
-                console.error('Error sending emergency alert:', error);
-                Alert.alert('Error', 'Failed to send emergency alert. Please try again.');
+    const sendBroadCastMessage = useCallback(
+        throttle(async () => {
+            const location = await getLocation();
+            
+            if (!location) {
+                Alert.alert('Error', 'Could not get location. Please check your location settings.');
+                return;
             }
-        }
-    }
+
+            if (alertMode === 'Standby') {
+                Alert.alert(
+                    'Confirm Emergency',
+                    `Are you sure you want to send the emergency alert?\nLocation: ${location.latitude}, ${location.longitude}`,
+                    [
+                        {
+                            text: 'Cancel',
+                            style: 'cancel',
+                        },
+                        {
+                            text: 'Yes',
+                            onPress: () => sendEmergencyAlert(location),
+                        },
+                    ]
+                );
+            } else if (alertMode === 'Panic') {
+                sendEmergencyAlert(location);
+            }
+        }, 2000),
+        [alertMode]
+    );
 
     const checkVerticalShake = (data) => {
-        if (alertMode !== 'Panic' || cooldown) return; // Exit if not in Panic mode or in cooldown
+        if (alertMode !== 'Panic') return;
 
         const { z } = data;
         const currentTime = new Date().getTime();
-        const SHAKE_THRESHOLD = 3.0; // Adjust based on testing
-        const TIME_THRESHOLD = 2000; // 2 seconds
+        const SHAKE_THRESHOLD = 3.0;
+        const TIME_THRESHOLD = 2000;
         const SHAKE_COUNT_THRESHOLD = 3;
 
-        // Calculate change in z-axis rotation
         const deltaZ = Math.abs(z - lastZ.current);
         lastZ.current = z;
 
         if (deltaZ > SHAKE_THRESHOLD) {
             const timeDiff = currentTime - lastShakeTime.current;
-            if (timeDiff > 250) { // Minimum time between shakes (250ms)
+            if (timeDiff > 250) {
                 shakes.current.push(currentTime);
                 lastShakeTime.current = currentTime;
 
-                // Remove shakes older than 2 seconds
-                shakes.current = shakes.current.filter(shakeTime => currentTime - shakeTime <= TIME_THRESHOLD);
+                shakes.current = shakes.current.filter(
+                    shakeTime => currentTime - shakeTime <= TIME_THRESHOLD
+                );
 
                 if (shakes.current.length >= SHAKE_COUNT_THRESHOLD) {
-                    debouncedSendBroadCastMessage.current(); // Use debounced function
-                    shakes.current = []; // Reset after triggering
+                    sendBroadCastMessage();
+                    shakes.current = [];
                 }
             }
         }
     };
 
-    // Debounce function
-    const debounce = (func, delay) => {
-        let timeoutId;
-        return (...args) => {
-            if (timeoutId) clearTimeout(timeoutId);
-            timeoutId = setTimeout(() => {
-                func.apply(this, args);
-            }, delay);
-        };
+    const startPulseAnimation = () => {
+        Animated.loop(
+            Animated.sequence([
+                Animated.timing(scaleAnim, {
+                    toValue: 1.2,
+                    duration: 1000,
+                    easing: Easing.inOut(Easing.ease),
+                    useNativeDriver: true,
+                }),
+                Animated.timing(scaleAnim, {
+                    toValue: 1,
+                    duration: 1000,
+                    easing: Easing.inOut(Easing.ease),
+                    useNativeDriver: true,
+                }),
+            ])
+        ).start();
+
+        Animated.loop(
+            Animated.sequence([
+                Animated.timing(rippleAnim, {
+                    toValue: 1,
+                    duration: 1500,
+                    easing: Easing.inOut(Easing.ease),
+                    useNativeDriver: true,
+                }),
+                Animated.timing(rippleAnim, {
+                    toValue: 0,
+                    duration: 0,
+                    useNativeDriver: true,
+                }),
+            ])
+        ).start();
+    };
+
+    const stopPulseAnimation = () => {
+        scaleAnim.stopAnimation(() => {
+            scaleAnim.setValue(1);
+        });
+        rippleAnim.stopAnimation(() => {
+            rippleAnim.setValue(0);
+        });
     };
 
     useEffect(() => {
@@ -207,12 +212,15 @@ export default function Home() {
             stopPulseAnimation();
         }
 
-        return () => _unsubscribe(); // Cleanup on unmount or alert mode change
+        return () => _unsubscribe();
     }, [alertMode]);
+
+    const toggleAlertMode = () => {
+        setAlertMode(prevMode => (prevMode === 'Standby' ? 'Panic' : 'Standby'));
+    };
 
     const yellow = '#f1c40f';
     const red = '#c0392b';
-    const disabledColor = '#bdc3c7'; // Gray color for disabled state
 
     return (
         <View style={styles.container}>
@@ -233,38 +241,35 @@ export default function Home() {
 
             <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
                 <TouchableOpacity
-                    style={[
-                        styles.button,
-                        {
-                            backgroundColor: cooldown
-                                ? disabledColor
-                                : alertMode === 'Standby'
-                                ? yellow
-                                : red,
-                        },
-                    ]}
+                    style={[styles.button, { backgroundColor: alertMode === 'Standby' ? yellow : red }]}
                     onPress={sendBroadCastMessage}
                     onLongPress={toggleAlertMode}
-                    disabled={cooldown} // Disable button during cooldown
                 >
                     <Text style={styles.buttonText}>
-                        {cooldown ? 'Cooldown...' : alertMode === 'Standby' ? 'Standby Mode' : 'Panic Mode'}
+                        {alertMode === 'Standby' ? 'Standby Mode' : 'Panic Mode'}
                     </Text>
                 </TouchableOpacity>
             </Animated.View>
 
-            {/* Legend at the bottom */}
             <View style={styles.legend}>
                 <View style={styles.legendItem}>
                     <View style={[styles.colorBox, { backgroundColor: yellow }]} />
-                    <Text style={styles.legendText}>Standby: Tap to send an alert. No shake detection.</Text>
+                    <Text style={styles.legendText}>
+                        Standby: Tap to send an alert. No shake detection.
+                    </Text>
                 </View>
                 <View style={styles.legendItem}>
                     <View style={[styles.colorBox, { backgroundColor: red }]} />
-                    <Text style={styles.legendText}>Panic: Tap or shake to send an alert.</Text>
+                    <Text style={styles.legendText}>
+                        Panic: Tap or shake to send an alert.
+                    </Text>
                 </View>
-                <Text style={[styles.legendText, styles.currentModeText]}>Current Mode: {alertMode} Mode</Text>
-                <Text style={styles.instructions}>Long press the button to switch between modes.</Text>
+                <Text style={[styles.legendText, styles.currentModeText]}>
+                    Current Mode: {alertMode} Mode
+                </Text>
+                <Text style={styles.instructions}>
+                    Long press the button to switch between modes.
+                </Text>
             </View>
         </View>
     );
@@ -275,7 +280,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        paddingBottom: 60, // Space for the legend
+        paddingBottom: 60,
     },
     button: {
         width: 200,
@@ -293,17 +298,17 @@ const styles = StyleSheet.create({
     },
     ripple: {
         position: 'absolute',
-        width: 300, // Make it larger than the button
+        width: 300,
         height: 300,
         borderRadius: 150,
-        backgroundColor: 'rgba(255, 0, 0, 0.3)', // Slightly transparent red for the ripple
+        backgroundColor: 'rgba(255, 0, 0, 0.3)',
     },
     legend: {
         position: 'absolute',
         bottom: 20,
         left: 20,
         right: 20,
-        alignItems: 'flex-start', // Align to the left
+        alignItems: 'flex-start',
     },
     legendItem: {
         flexDirection: 'row',
