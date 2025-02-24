@@ -1,10 +1,11 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import { Avatar, Divider } from 'react-native-paper';
+import { Avatar, Divider, Icon } from 'react-native-paper';
 import useUserStore from '../stores/userStore';
 
 const ProfileScreen = ({ navigation }) => {
-    const  {user}  = useUserStore();
+    const { user } = useUserStore();
+    console.log(user);
 
     return (
         <ScrollView style={styles.container}>
@@ -15,8 +16,24 @@ const ProfileScreen = ({ navigation }) => {
                     size={80}
                 />
                 <Text style={styles.name}>{user?.name || 'Guest User'}</Text>
-                <Text style={styles.email}>{user?.email || 'No email set'}</Text>
-                <Text style={styles.phone}>{user?.whatsapp || 'No phone number'}</Text>
+
+                {/* Address */}
+                <View style={styles.infoContainer}>
+                    <Icon source="map-marker" size={20} style={styles.icon} />
+                    <Text style={styles.infoText}>{user?.address || 'No address set'}</Text>
+                </View>
+
+                {/* Email */}
+                <View style={styles.infoContainer}>
+                    <Icon source="email" size={20} style={styles.icon} />
+                    <Text style={styles.infoText}>{user?.email || 'No email set'}</Text>
+                </View>
+
+                {/* Phone */}
+                <View style={styles.infoContainer}>
+                    <Icon source="phone" size={20} style={styles.icon} />
+                    <Text style={styles.infoText}>{user?.whatsapp || 'No phone number'}</Text>
+                </View>
             </View>
 
             <Divider style={styles.divider} />
@@ -80,11 +97,15 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginTop: 8,
     },
-    email: {
-        fontSize: 16,
-        color: '#666',
+    infoContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: 4,
     },
-    phone: {
+    icon: {
+        marginRight: 8,
+    },
+    infoText: {
         fontSize: 16,
         color: '#666',
     },
