@@ -5,7 +5,6 @@ import useUserStore from '../stores/userStore';
 
 const ProfileScreen = ({ navigation }) => {
     const { user } = useUserStore();
-    console.log(user);
 
     return (
         <ScrollView style={styles.container}>
