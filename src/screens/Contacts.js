@@ -46,8 +46,7 @@ const ContactsScreen = () => {
       <FlatList
         data={contacts}
         renderItem={renderContactCard}
-        keyExtractor={(item) => item._id}
-        key={item => item._id}
+        keyExtractor={(item) => item._id.toString()}
         contentContainerStyle={styles.listContainer}
         extraData={contacts}
       />

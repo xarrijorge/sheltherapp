@@ -61,17 +61,17 @@ const useUserStore = create((set, get) => ({
   addContact: async (contact) => {
     try {
       const response = await axios.patch('/user/addcontact', contact);
+      console.log("Response:", response); // Log response
       const newContact = response.data.contact;
 
       set((state) => ({ contacts: [...state.contacts, newContact] }));
       get().saveUserData();
-
       return newContact;
     } catch (error) {
-      console.error('Failed to add contact:', error);
+      console.error('Failed to add contact:', error?.response?.data || error.message);
       throw error;
     }
-  },
+  }, 
 
   removeContact: async (id) => {
     try {
@@ -92,6 +92,11 @@ const useUserStore = create((set, get) => ({
     try {
       const response = await axios.patch('/user/addplace', place);
       const newPlace = response.data.place;
+      
+      // Make sure the place has an ID - if not, generate one
+      if (!newPlace._id && !newPlace.id) {
+        newPlace._id = Date.now().toString(); // Use timestamp as fallback ID
+      }
 
       set((state) => ({
         places: [...state.places, newPlace],
@@ -107,11 +112,24 @@ const useUserStore = create((set, get) => ({
   },
 
   removePlace: (id) => {
+    if (!id) return; // Don't attempt to remove if ID is undefined
+    
     set((state) => ({
-      places: state.places.filter(place => place.id !== id),
+      // Try to match by either _id or id
+      places: state.places.filter(place => 
+        (place._id !== id && place.id !== id)
+      ),
     }));
 
     get().saveUserData();
+  }, 
+
+  removePlace: (id) => {
+    set((state) => ({
+      places: state.places.filter(place => place._id !== id),
+    }));
+
+    get().saveUserData(); 
   },
 
   changePassword: async (currentPassword, newPassword) => {

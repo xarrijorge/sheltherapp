@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Modal, TextInput, Alert, TouchableWithoutFeedback } from 'react-native';
-import { Text, Button } from 'react-native-paper';
+import { Text, Button, ActivityIndicator } from 'react-native-paper';
 import * as Location from 'expo-location';
 import useUserStore from '../stores/userStore';
 
@@ -15,8 +15,8 @@ const AddPlaceModal = ({ visible, onClose }) => {
       Alert.alert('Error', 'Please enter a name for the place.');
       return;
     }
-    setLoading(true);
     try {
+      setLoading(true);
       const { coords } = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.High });
       const newPlace = {
         name: `${name} | ${address}`,
@@ -24,7 +24,11 @@ const AddPlaceModal = ({ visible, onClose }) => {
         longitude: coords.longitude,
       };
       await addPlace(newPlace);
-      onClose(); // ✅ Ensure modal closes after adding a place
+      
+      // Only clear form after successful add
+      setName('');
+      setAddress('');
+      onClose();
     } catch (error) {
       Alert.alert('Error', 'Failed to get location.');
       console.error('Error getting location:', error);
@@ -33,55 +37,77 @@ const AddPlaceModal = ({ visible, onClose }) => {
     }
   };
 
+  const handleCancel = () => {
+    if (!loading) {
+      onClose();
+    }
+  };
+
   return (
     <Modal
-      visible={visible} // ✅ Ensure modal listens to the visible prop
+      visible={visible}
       animationType="slide"
       transparent
-      onRequestClose={onClose}
+      onRequestClose={handleCancel}
     >
-      <TouchableWithoutFeedback onPress={onClose}>
-        <View style={styles.modalContainer}>
-          <TouchableWithoutFeedback>
-            <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>Add current location to saved places</Text>
-              <TextInput
-                placeholder="Enter place name"
-                value={name}
-                onChangeText={setName}
-                style={styles.input}
-              />
-              <TextInput
-                placeholder="Enter address"
-                value={address}
-                onChangeText={setAddress}
-                style={styles.input}
-              />
-              <Button
-                style={styles.button}
-                mode="contained"
-                onPress={handleAddPlace}
-                disabled={loading}
-              >
-                Add Place
-              </Button>
-            </View>
-          </TouchableWithoutFeedback>
-        </View>
-      </TouchableWithoutFeedback>
+      <View style={[styles.modalContainer, loading && styles.modalContainerDarker]}>
+        <TouchableWithoutFeedback>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Add current location to saved places</Text>
+            <TextInput
+              placeholder="Enter place name"
+              value={name}
+              onChangeText={setName}
+              style={styles.input}
+              editable={!loading}
+            />
+            <TextInput
+              placeholder="Enter address"
+              value={address}
+              onChangeText={setAddress}
+              style={styles.input}
+              editable={!loading}
+            />
+            
+            {loading ? (
+              <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color="#0066cc" />
+                <Text style={styles.loadingText}>Getting location...</Text>
+              </View>
+            ) : (
+              <View style={styles.buttonContainer}>
+                <Button
+                  style={styles.cancelButton}
+                  mode="outlined"
+                  onPress={handleCancel}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  style={styles.addButton}
+                  mode="contained"
+                  onPress={handleAddPlace}
+                >
+                  Add Place
+                </Button>
+              </View>
+            )}
+          </View>
+        </TouchableWithoutFeedback>
+      </View>
     </Modal>
   );
 };
 
 const styles = StyleSheet.create({
-  button: {
-    marginTop: 10,
-  },
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContainerDarker: {
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
   },
   modalContent: {
     width: '80%',
@@ -93,13 +119,39 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    marginBottom: 35,
+    marginBottom: 25,
     textTransform: 'capitalize'
   },
   input: {
     marginBottom: 15,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
+    paddingVertical: 8,
+  },
+  loadingContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 20,
+    marginBottom: 10,
+    paddingVertical: 10,
+  },
+  loadingText: {
+    marginTop: 12,
+    color: '#0066cc',
+    fontWeight: '500',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 15,
+  },
+  cancelButton: {
+    flex: 1,
+    marginRight: 8,
+  },
+  addButton: {
+    flex: 1,
+    marginLeft: 8,
   },
 });
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, FlatList } from 'react-native';
-import { Text, FAB } from 'react-native-paper'; // Import FAB
+import { Text, FAB } from 'react-native-paper';
 import PlaceCard from './PlaceCard';
 import AddPlaceModal from '../components/AddPlaceModal';
 import useUserStore from '../stores/userStore';
@@ -13,13 +13,23 @@ const ListView = ({ places }) => {
     <PlaceCard place={item} onRemove={() => removePlace(item._id)} />
   );
 
+  // Safe key extractor that handles undefined/null IDs
+  const keyExtractor = (item) => {
+    // First try to use _id
+    if (item._id) return item._id.toString();
+    // Fall back to id if _id is not available
+    if (item.id) return item.id.toString();
+    // Last resort, use some combination of properties or just index
+    return `place-${item.name}-${item.latitude}-${item.longitude}`;
+  };
+
   return (
     <View style={styles.container}>
-      {places.length > 0 ? (
+      {places && places.length > 0 ? (
         <FlatList
           data={places}
           renderItem={renderPlaceCard}
-          keyExtractor={item => item._id}
+          keyExtractor={keyExtractor}
           contentContainerStyle={styles.listContainer}
           extraData={places}
         />
