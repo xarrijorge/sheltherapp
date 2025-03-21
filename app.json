@@ -1,16 +1,15 @@
 {
   "expo": {
-    "name": "shelther-app",
+    "name": "Shelther",
     "slug": "shelther-app",
     "version": "1.0.0",
-    "web": {
-      "favicon": "./assets/ico.ico"
-    },
     "extra": {
       "eas": {
         "projectId": "2b53f666-c580-4ee0-95f1-99bef0eb37ca"
       }
+    },
+    "android": {
+      "package": "com.xroot.sheltherapp"
     }
-    
   }
 }

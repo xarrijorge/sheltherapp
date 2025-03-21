@@ -91,7 +91,7 @@ const LoginScreen = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
-            <Image source={require('../../assets/sheltherTransparent.png')} style={{ width: 250, height: 150, alignSelf: 'center' }} />
+            <Image source={require('../../assets/sheltherTransparent.png')} style={{ width: 200, alignSelf: 'center' }} />
             <Text style={styles.title}>Login</Text>
             <TextInput
                 label="Email"
